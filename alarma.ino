@@ -25,12 +25,24 @@ int melody_happy_birthday[] = {
   NOTE_F5, 4, NOTE_F5, 4, NOTE_E5, 2, NOTE_C5, 2, NOTE_D5, 2, NOTE_C5, 1,
   -1
 };
+int melody_alle_meine_entchen[] = {
+  NOTE_C4, 4, NOTE_D4, 4, NOTE_E4, 4, NOTE_F4, 4, NOTE_G4, 2, NOTE_B4, 2,
+  
+  NOTE_B4, 4, NOTE_B4, 4, NOTE_B4, 4, NOTE_GS4, 4, NOTE_B4, 1,
+  
+   NOTE_B4, 4,NOTE_B4, 4,NOTE_GS4, 4,NOTE_F4, 4,   NOTE_F4, 1,
+  
+  NOTE_F4, 4,NOTE_E4, 4,NOTE_E4, 4,NOTE_G4, 4,NOTE_G4, 2,NOTE_G4, 2,
+NOTE_G4, 4,NOTE_C4, 4,
+  -1
+};
 
-#define NR_MELODIES 3
+#define NR_MELODIES 4
 int* melodies[] = {
   melody_enter,
   melody_brother_jakob,
-  melody_happy_birthday
+  melody_happy_birthday,
+  melody_alle_meine_entchen
 };
 
 
@@ -39,7 +51,7 @@ int* melodies[] = {
 
 int modeBtnState = 0;
 
-int snd = NR_MELODIES;  // which sound to play
+int snd = 3;// NR_MELODIES;  // which sound to play
 
 
 int alarm_is_on = 0;
@@ -78,12 +90,12 @@ void alarm_on() {
 
 
 void play_alarm() {
-  digitalWrite(ledPin, HIGH);
+  digitalWrite(ledPin, LOW);
 
   tone(tonePin, NOTE_A2);
   delay (500);
   
-  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin, HIGH);
   
   tone(tonePin, NOTE_A3);
   delay (500);
@@ -92,7 +104,7 @@ void play_alarm() {
 void alarm_off() {
   alarm_is_on = 0;
 
-  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin, HIGH);
 
   noTone(tonePin);
 }
