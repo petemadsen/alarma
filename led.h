@@ -1,4 +1,15 @@
+#ifndef ALARMA_LED_H
+#define ALARMA_LED_H
+
 #include "i2c.h"
+
+uint8_t led_state[3] = { 0xff, 0xff, 0xff };
+
+
+void led_setup()
+{
+  send_cmd(I2C_PCF8574, 0xff);
+}
 
 
 void led_loop()
@@ -39,3 +50,31 @@ void led_loop()
   }
 }
 
+
+void led_set(uint8_t num, bool red, bool green, bool blue)
+{
+  if(num==0 || num > 7)
+    return;
+
+  if(num==1) {
+    led_state[0] |= (7 << 5);
+    if(red)
+      led_state[0] &= ~0x80;
+    if(green)
+      led_state[0] &= ~0x40;
+    if(blue)
+      led_state[0] &= ~0x20;
+  } else if(num==2) {
+    led_state[0] |= (7 << 2);
+    if(red)
+      led_state[0] &= ~0x10;
+    if(green)
+      led_state[0] &= ~0x08; // swapped
+    if(blue)
+      led_state[0] &= ~0x04; // swapped
+  }
+
+  send_cmd(I2C_PCF8574, led_state[0]);
+}
+
+#endif

@@ -43,6 +43,9 @@ void setup() {
   TWSR |= bit (TWPS1);
   Serial.println("[ok] wire");
 
+  led_setup();
+  Serial.println("[ok] led");
+
   oled_setup();
   Serial.println("[ok] oled");
 
@@ -62,8 +65,22 @@ void setup() {
 
 
 void loop() {
-  led_loop();
+  Serial.println("loop");
+
+  for(int i=1; i<=2; ++i) {
+    led_set(i, true, false, false);
+    delay(1000);
+    led_set(i, false, true, false);
+    delay(1000);
+    led_set(i, false, false, true);
+    delay(1000);
+    led_set(i, false, false, false);
+    delay(1000);
+  }
+  //led_loop();
+  
   oled_loop();
+  
   return;
   
   /**
