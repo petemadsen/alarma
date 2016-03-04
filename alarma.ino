@@ -11,7 +11,6 @@
 int modeBtnState = 0;
 
 
-
 int alarm_is_on = 0;
 
 
@@ -23,7 +22,7 @@ void alarm_on() {
 void alarm_off() {
   alarm_is_on = 0;
 
-  digitalWrite(ledPin, LOW);
+  digitalWrite(ledPin, HIGH);
 
   noTone(tonePin);
 }

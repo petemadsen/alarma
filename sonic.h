@@ -75,6 +75,10 @@ void sonic_calibrate() {
 
 
 void sonic_alarm() {
+  if(alarm_distance < 50) {
+    //return;
+  }
+  
   long d = sonic_get_distance();
   delay(50);
 
