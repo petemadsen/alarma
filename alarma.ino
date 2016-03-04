@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "button.h"
 #include "led.h"
+#include "oled.h"
 
 
 int modeBtnState = 0;
@@ -42,6 +43,9 @@ void setup() {
   TWSR |= bit (TWPS1);
   Serial.println("[ok] wire");
 
+  oled_setup();
+  Serial.println("[ok] oled");
+
   return;
 
   pinMode(ledPin, OUTPUT);
@@ -59,6 +63,7 @@ void setup() {
 
 void loop() {
   led_loop();
+  oled_loop();
   return;
   
   /**
