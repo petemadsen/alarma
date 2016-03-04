@@ -11,6 +11,9 @@
 #define echoPin 7 // Echo Pin
 #define trigPin 6 // Trigger Pin
 
+#define I2C_PCF8574 (0x40>>1)
+#define I2C_OLED    (0x78>>1)
+
 extern void alarm_on();
 
 extern void alarm_off();
