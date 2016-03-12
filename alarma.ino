@@ -45,7 +45,7 @@ void setup() {
   led_setup();
   Serial.println("[ok] led");
 
-  oled_setup();
+  //oled_setup();
   Serial.println("[ok] oled");
 
   return;
@@ -65,20 +65,20 @@ void setup() {
 
 void loop() {
   Serial.println("loop");
+  //i2c_scan();
 
-  for(int i=1; i<=2; ++i) {
+  for(int i=1; i<=7; ++i) {
     led_set(i, true, false, false);
-    delay(1000);
+    delay(300);
     led_set(i, false, true, false);
-    delay(1000);
+    delay(300);
     led_set(i, false, false, true);
-    delay(1000);
+    delay(300);
     led_set(i, false, false, false);
-    delay(1000);
   }
   //led_loop();
   
-  oled_loop();
+  //oled_loop();
   
   return;
   
