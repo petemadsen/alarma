@@ -1,3 +1,7 @@
+#ifndef I2C_H
+#define I2C_H
+
+
 void i2c_scan()
 {
   byte error, address;
@@ -42,35 +46,34 @@ void i2c_scan()
 
 
 
-#if 0
-void read_i2c(int addr)
+int read_i2c(int addr)
 {
   Wire.requestFrom(addr, 1);
 
-  Serial.print("READ: ");
-  Serial.print(addr);
-  Serial.print("  RECEIVED: ");
   if(Wire.available())     //If the request is available
   {
-      x=Wire.read();       //Receive the data
-      Serial.println(x);
+      return Wire.read();       //Receive the data
+      //Serial.println(x);
   } else {
     Serial.println("NONE");
   }
+  return -1;
 }
-#endif
 
 
 void send_cmd(int wnd, int cmd)
 {
+#if 0
   Serial.print("ACTION: to 0x");
   Serial.print(wnd << 1, HEX);
   Serial.print(" cmd ");
   Serial.println(cmd);
+#endif
  
   Wire.beginTransmission(wnd);
   Wire.write(cmd);
   Wire.endTransmission();
 }
 
+#endif
 

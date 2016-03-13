@@ -47,6 +47,10 @@ void setup() {
 
   //oled_setup();
   Serial.println("[ok] oled");
+  oled_setup();
+
+  buttons_setup();
+  Serial.println("[ok] buttons");
 
   return;
 
@@ -63,22 +67,86 @@ void setup() {
 }
 
 
-void loop() {
-  Serial.println("loop");
-  //i2c_scan();
+int mode = MODE_LED_ACTION;
+int mode_olen = MODE_STOP;
 
-  for(int i=1; i<=7; ++i) {
-    led_set(i, true, false, false);
-    delay(300);
-    led_set(i, false, true, false);
-    delay(300);
-    led_set(i, false, false, true);
-    delay(300);
-    led_set(i, false, false, false);
+
+#define CHECK_BUTTONS() if(handle_buttons()) return;
+bool handle_buttons()
+{
+  int button = buttons_loop();
+  if(button == -1) {
+    return false;
   }
-  //led_loop();
   
-  //oled_loop();
+  Serial.print("b:");
+  Serial.println(button);
+  switch(button) {
+  case BUTTON_1:
+    if(mode == MODE_LED_ACTION) {
+      mode = MODE_STOP;
+      //led_set(1, true, false, false);
+    } else {
+      mode = MODE_LED_ACTION;
+      //led_set(1, false, false, false);
+    }
+    break;
+
+  case BUTTON_2:
+    if(mode_olen == MODE_OLED_ON) {
+      mode_olen = MODE_STOP;
+    } else {
+      mode_olen = MODE_OLED_ON;
+    }
+    break;
+
+  case BUTTON_3:
+    break;
+
+  default:
+    return false;
+  }
+
+  return true;
+}
+
+
+void loop()
+{
+  CHECK_BUTTONS();
+
+
+#if 1
+  if(mode == MODE_LED_ACTION) {
+    CHECK_BUTTONS();
+    led_set(1, true, false, false);
+    led_set(2, false, true, false);
+    led_set(3, false, false, true);
+    led_set(4, true, false, false);
+    led_set(5, false, true, false);
+    led_set(6, false, false, true);
+    led_set(7, true, false, false);
+    delay(500);
+
+    for(int i=1; i<=7; ++i) {
+      CHECK_BUTTONS();
+      led_set(i, true, false, false);
+      delay(10);
+      led_set(i, false, false, false);
+    }
+    for(int i=6; i>=2; --i) {
+      CHECK_BUTTONS();
+      led_set(i, true, false, false);
+      delay(10);
+      led_set(i, false, false, false);
+    }
+  }
+#endif
+  //led_loop();
+
+  if(mode_olen == MODE_OLED_ON) {
+    oled_loop();
+  }
   
   return;
   
