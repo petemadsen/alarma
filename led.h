@@ -6,11 +6,18 @@
 uint8_t led_state[3] = { 0xff, 0xff, 0xff };
 
 
-void led_setup()
+void led_all_off()
 {
+  led_state[0] = led_state[1] = led_state[2] = 0xff;
   send_cmd(I2C_PCF8574_1, 0xff);
   send_cmd(I2C_PCF8574_2, 0xff);
   send_cmd(I2C_PCF8574_3, 0xff);
+}
+
+
+void led_setup()
+{
+  led_all_off();
 }
 
 

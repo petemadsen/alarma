@@ -68,7 +68,7 @@ void setup() {
 
 
 int mode = MODE_LED_ACTION;
-int mode_olen = MODE_STOP;
+int mode_oled = MODE_STOP;
 
 
 #define CHECK_BUTTONS() if(handle_buttons()) return;
@@ -85,18 +85,18 @@ bool handle_buttons()
   case BUTTON_1:
     if(mode == MODE_LED_ACTION) {
       mode = MODE_STOP;
-      //led_set(1, true, false, false);
+      oled_set_text("Stopp");
     } else {
       mode = MODE_LED_ACTION;
-      //led_set(1, false, false, false);
+      oled_set_text("Lauflicht");
     }
     break;
 
   case BUTTON_2:
-    if(mode_olen == MODE_OLED_ON) {
-      mode_olen = MODE_STOP;
+    if(mode_oled == MODE_OLED_ON) {
+      mode_oled = MODE_STOP;
     } else {
-      mode_olen = MODE_OLED_ON;
+      mode_oled = MODE_OLED_ON;
     }
     break;
 
@@ -118,7 +118,10 @@ void loop()
 
 #if 1
   if(mode == MODE_LED_ACTION) {
+    led_all_off();
+    delay(1000);
     CHECK_BUTTONS();
+    
     led_set(1, true, false, false);
     led_set(2, false, true, false);
     led_set(3, false, false, true);
@@ -126,26 +129,32 @@ void loop()
     led_set(5, false, true, false);
     led_set(6, false, false, true);
     led_set(7, true, false, false);
-    delay(500);
+    CHECK_BUTTONS();
+    delay(1000);
+    CHECK_BUTTONS();
+
+    led_all_off();
+    delay(1000);
+    CHECK_BUTTONS();
 
     for(int i=1; i<=7; ++i) {
       CHECK_BUTTONS();
       led_set(i, true, false, false);
-      delay(10);
+      delay(100);
       led_set(i, false, false, false);
     }
     for(int i=6; i>=2; --i) {
       CHECK_BUTTONS();
       led_set(i, true, false, false);
-      delay(10);
+      delay(100);
       led_set(i, false, false, false);
     }
   }
 #endif
   //led_loop();
 
-  if(mode_olen == MODE_OLED_ON) {
-    oled_loop();
+  if(mode_oled == MODE_OLED_ON) {
+    //oled_loop();
   }
   
   return;

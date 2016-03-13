@@ -22,6 +22,14 @@ All text above, and the splash screen must be included in any redistribution
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
+void oled_set_text(const char* text)
+{
+  display.setCursor(10,0);
+  display.clearDisplay();
+  display.println(text);
+  display.display();
+}
+
 void oled_setup()
 {
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
@@ -39,6 +47,12 @@ void oled_setup()
 
   // draw a single pixel
   display.drawPixel(10, 10, WHITE);
+
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(10,0);
+
+  oled_set_text("Bereit");
 }
 
 void oled_loop() {
@@ -64,4 +78,5 @@ void oled_loop() {
   delay(2000);
   display.stopscroll();
 }
+
 
