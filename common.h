@@ -4,8 +4,8 @@
 //#define DEBUG
 
 #define alarmPin 2 // digital
-#define tonePin 9  // digital
-#define ledPin 13   // on-board
+//#define tonePin 9  // digital
+//#define ledPin 13   // on-board
 #define modePin 5
 
 #define echoPin 7 // Echo Pin

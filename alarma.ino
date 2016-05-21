@@ -22,9 +22,9 @@ void alarm_on() {
 void alarm_off() {
   alarm_is_on = 0;
 
-  digitalWrite(ledPin, HIGH);
+  //digitalWrite(ledPin, HIGH);
 
-  noTone(tonePin);
+  //noTone(tonePin);
 }
 
 
@@ -52,9 +52,12 @@ void setup() {
   buttons_setup();
   Serial.println("[ok] buttons");
 
+  rfid_init();
+  Serial.print("[ok] rfid");
+
   return;
 
-  pinMode(ledPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
   pinMode(alarmPin, INPUT);
   pinMode(modePin, INPUT);
 
@@ -113,7 +116,7 @@ bool handle_buttons()
 
 void loop()
 {
-  CHECK_BUTTONS();
+  //CHECK_BUTTONS();
 
 
 #if 1
@@ -156,6 +159,10 @@ void loop()
   if(mode_oled == MODE_OLED_ON) {
     //oled_loop();
   }
+
+
+  rfid_loop();
+  
   
   return;
   
@@ -192,6 +199,7 @@ void loop()
 
   sonic_alarm();
   // button_alarm();
+
 }
 
 

@@ -55,7 +55,7 @@ int read_i2c(int addr)
       return Wire.read();       //Receive the data
       //Serial.println(x);
   } else {
-    Serial.println("NONE");
+    //Serial.println("NONE");
   }
   return -1;
 }
