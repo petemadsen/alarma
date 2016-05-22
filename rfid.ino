@@ -12,8 +12,10 @@ unsigned long rfid_last_access = 0;
 unsigned long rfid_current_interval = ACCESS_GRANTED;
 
 #define KEY_LEN 4
-#define NR_KEYS 1
-unsigned char rfid_valid_keys[KEY_LEN*NR_KEYS];
+#define NR_KEYS 2
+unsigned char rfid_valid_keys[] = {
+  0xd7, 0xa6, 0x67,0x11,
+  0xd0, 0xc8, 0x33, 0x2a};
 
 
 void rfid_init()
@@ -22,11 +24,6 @@ void rfid_init()
   SPI.begin();
  
   rfid.init();
-
-  rfid_valid_keys[0] = 0xd7;
-  rfid_valid_keys[1] = 0xa6;
-  rfid_valid_keys[2] = 0x67;
-  rfid_valid_keys[3] = 0x11;
 }
 
 
@@ -52,21 +49,44 @@ void rfid_loop()
     Serial.print(rfid.serNum[3], HEX);
     Serial.println();
 
-    bool found = true;
-    for(int i=0; i<NR_KEYS; ++i) {
-      found = true;
+    int key_id = 0;
+    for(; key_id<NR_KEYS; ++key_id) {
+      bool found = true;
       for(int k=0; k<KEY_LEN && found; ++k) {
-        Serial.print(rfid_valid_keys[i*KEY_LEN + k], HEX);
-        Serial.print(rfid.serNum[k], HEX);
-        Serial.println("--done");
-        found = rfid_valid_keys[i*KEY_LEN + k] == rfid.serNum[k];
+        found = rfid_valid_keys[key_id*KEY_LEN + k] == rfid.serNum[k];
       }
+      Serial.println(found ? "found" : "not");
       if(found) {
         break;
       }
     }
-    oled_set_text(found ? "Hallo\nMax!" : "Zugang\nverboten!\nAlarm!");
-    //Serial.println(found ? "Hallo\nMax!" : "Zugang\nverboten!\nAlarm!");
+
+    bool found = key_id < NR_KEYS;
+    bool r, g, b;
+
+    switch(key_id) {
+    case 0:
+      oled_set_text("Hallo\nMax!");
+      r = false; g = true; b = false;
+      break;
+    case 1:
+      oled_set_text("Hallo\nArtur!");
+      r = false; g = false; b = true;
+      break;
+    default:
+      oled_set_text("Zugang\nverboten!\nAlarm!");
+      r = true; g = false; b = false;
+      break;
+    }
+
+    led_set_all(r, g, b);
+    delay(1 * 250);
+    led_set_all(false, false, false);
+    delay(1 * 250);
+    led_set_all(r, g, b);
+    delay(1 * 250);
+    oled_set_text("Bereit");
+    led_set_all(false, false, false);
   }
   
   rfid.halt();
