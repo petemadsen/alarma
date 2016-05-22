@@ -136,4 +136,33 @@ void led_set(uint8_t num, bool red, bool green, bool blue)
   send_cmd(I2C_PCF8574_3, led_state[2]);
 }
 
+
+void led_set_all(bool red, bool green, bool blue)
+{
+  for(int i=0; i<8; ++i) {
+    led_set(i, red, green, blue);
+  }
+}
+
+
+void led_disco()
+{
+  for(int i=0; i<20; ++i) {
+    unsigned long m = millis();
+    led_state[0] = m & 0xff;
+    led_state[1] = (m >> 8) & 0xff;
+    led_state[2] = (m >> 16) & 0xff;
+    
+    send_cmd(I2C_PCF8574_1, led_state[0]);
+    send_cmd(I2C_PCF8574_2, led_state[1]);
+    send_cmd(I2C_PCF8574_3, led_state[2]);
+    delay(250);
+
+    send_cmd(I2C_PCF8574_1, ~led_state[0]);
+    send_cmd(I2C_PCF8574_2, ~led_state[1]);
+    send_cmd(I2C_PCF8574_3, ~led_state[2]);
+    delay(250);
+  }
+}
+
 #endif
