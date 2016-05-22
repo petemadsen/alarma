@@ -24,7 +24,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 
 void oled_set_text(const char* text)
 {
-  display.setCursor(10,0);
+  display.setCursor(0,0);
   display.clearDisplay();
   display.println(text);
   display.display();

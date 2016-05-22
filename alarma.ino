@@ -53,16 +53,24 @@ void setup() {
   Serial.println("[ok] buttons");
 
   rfid_init();
-  Serial.print("[ok] rfid");
+  Serial.println("[ok] rfid");
+
+  //mp3_setup();
+  //Serial.println("[ok] mp3");
+
+  led_disco();
+  led_all_off();
 
   return;
 
   //pinMode(ledPin, OUTPUT);
-  pinMode(alarmPin, INPUT);
-  pinMode(modePin, INPUT);
+  //pinMode(alarmPin, INPUT);
+  //pinMode(modePin, INPUT);
 
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  //pinMode(trigPin, OUTPUT);
+  //pinMode(echoPin, INPUT);
+
+
 
   //play_melody();
   sonic_calibrate();
@@ -114,12 +122,13 @@ bool handle_buttons()
 }
 
 
+
 void loop()
 {
   //CHECK_BUTTONS();
 
 
-#if 1
+#if 0
   if(mode == MODE_LED_ACTION) {
     led_all_off();
     delay(1000);
@@ -168,7 +177,7 @@ void loop()
   
   /**
    * MODE
-   */
+   *
   modeBtnState = digitalRead(modePin);
   if(modeBtnState == LOW) {
     Serial.println("button-pressed");
@@ -188,6 +197,7 @@ void loop()
     }
     return;
   }
+  */
 
   /**
    * ALARM

@@ -16,6 +16,7 @@ long alarm_distance = -1;
 
 
 long sonic_get_distance() {
+#if 0
   /* The following trigPin/echoPin cycle is used to determine the
    distance of the nearest object by bouncing soundwaves off of it. */
   digitalWrite(trigPin, LOW); 
@@ -40,6 +41,8 @@ long sonic_get_distance() {
     return maxRange;
   }
   return distance;
+#endif
+  return 0;
 }
 
 

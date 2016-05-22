@@ -3,13 +3,16 @@
 
 //#define DEBUG
 
-#define alarmPin 2 // digital
+//#define alarmPin 2 // digital
 //#define tonePin 9  // digital
 //#define ledPin 13   // on-board
-#define modePin 5
+//#define modePin 5
 
-#define echoPin 7 // Echo Pin
-#define trigPin 6 // Trigger Pin
+#define MP3_NEXT_PIN 3
+#define MP3_PREV_PIN 2
+
+//#define echoPin 7 // Echo Pin
+//#define trigPin 6 // Trigger Pin
 
 #define I2C_PCF8574_1 (0x40>>1)
 #define I2C_PCF8574_2 (0x4e>>1)
