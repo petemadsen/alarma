@@ -40,19 +40,35 @@ int* melodies[] = {
 #include "common.h"
 #include "pitches.h"
 
-void beep()
+void play_melody();
+
+void sound_beep()
 {
-  //tone(tonePin, NOTE_A1);
-  delay (250);
-  //noTone(tonePin);
+  Serial.println("[beep]");
+  tone(tonePin, NOTE_A1);
+  delay(250);
+  noTone(tonePin);
 }
 
 
 
 
-void play_melody() {
+void sound_setup()
+{
+  pinMode(tonePin, OUTPUT);
+  sound_beep();
+  
+  Serial.println(F("[ok] sound"));
+}
+
+
+
+
+void sound_melody() {
   int thisNote = 0;
   int* notes = melodies[snd%NR_MELODIES];
+
+  Serial.println("[melody]");
 
   // iterate over the notes of the melody:
   while (notes[thisNote] != -1) {
@@ -60,14 +76,14 @@ void play_melody() {
     // divided by the note type.
     //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
     int noteDuration = 1000/notes[thisNote+1];
-    //tone(tonePin, notes[thisNote], noteDuration);
+    tone(tonePin, notes[thisNote], noteDuration);
 
     // to distinguish the notes, set a minimum time between them.
     // the note's duration + 30% seems to work well:
     int pauseBetweenNotes = noteDuration * 1.30;
     delay(pauseBetweenNotes);
     // stop the tone playing:
-    //noTone(tonePin);
+    noTone(tonePin);
 
     // next note
     thisNote += 2;
@@ -78,7 +94,7 @@ void play_melody() {
 
 
 
-void play_alarm() {
+void sound_alarm() {
   //digitalWrite(ledPin, HIGH);
 
   //tone(tonePin, NOTE_A2);

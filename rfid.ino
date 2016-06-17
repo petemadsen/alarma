@@ -1,3 +1,4 @@
+#ifdef USE_RFID
 #include <SPI.h>
 #include "rfid-master/RFID.h"                                  // RFID Master2 Library
 
@@ -91,3 +92,4 @@ void rfid_loop()
   
   rfid.halt();
 }
+#endif

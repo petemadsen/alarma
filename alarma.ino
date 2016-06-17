@@ -31,50 +31,54 @@ void alarm_off() {
 
 
 
-void setup() {
+void setup()
+{
   Serial.begin (9600);
-  Serial.println("Init..");
+  Serial.println(F("Init.."));
 
   Wire.begin();
   Wire.setClock(31L * 1000L);
   TWBR = 40;
   TWSR |= bit (TWPS0);
   TWSR |= bit (TWPS1);
-  Serial.println("[ok] wire");
+  Serial.println(F("[ok] wire"));
 
   led_setup();
-  Serial.println("[ok] led");
+  Serial.println(F("[ok] led"));
 
   //oled_setup();
-  Serial.println("[ok] oled");
+#ifdef USE_OLED
+  Serial.println(F("[ok] oled"));
   oled_setup();
+#endif
 
   buttons_setup();
-  Serial.println("[ok] buttons");
+  Serial.println(F("[ok] buttons"));
 
+#ifdef USE_RFID
   rfid_init();
-  Serial.println("[ok] rfid");
+  Serial.println(F("[ok] rfid"));
+#endif
 
   //mp3_setup();
   //Serial.println("[ok] mp3");
 
-  led_disco();
-  led_all_off();
-
-  return;
-
-  //pinMode(ledPin, OUTPUT);
-  //pinMode(alarmPin, INPUT);
-  //pinMode(modePin, INPUT);
-
-  //pinMode(trigPin, OUTPUT);
-  //pinMode(echoPin, INPUT);
-
-
+  sound_setup();
 
   //play_melody();
   sonic_calibrate();
-  beep();
+  sound_beep();
+
+  led_disco();
+  led_all_off();
+
+  //pinMode(ledPin, OUTPUT);
+  //
+  //pinMode(modePin, INPUT);
+
+
+
+  Serial.println("[OK] INIT");
 }
 
 
@@ -169,11 +173,10 @@ void loop()
     //oled_loop();
   }
 
-
+#ifdef USE_RFID
   rfid_loop();
+#endif
   
-  
-  return;
   
   /**
    * MODE
@@ -202,12 +205,12 @@ void loop()
   /**
    * ALARM
    */
-  if(alarm_is_on) {
-    play_alarm();
-    return;
-  }
+//  if(alarm_is_on) {
+//    sonic_alarm();
+//    return;
+//  }
 
-  sonic_alarm();
+  sonic_loop();
   // button_alarm();
 
 }

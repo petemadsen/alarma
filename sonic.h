@@ -15,8 +15,8 @@ long alarm_distance = -1;
 
 
 
-long sonic_get_distance() {
-#if 0
+long sonic_get_distance()
+{
   /* The following trigPin/echoPin cycle is used to determine the
    distance of the nearest object by bouncing soundwaves off of it. */
   digitalWrite(trigPin, LOW); 
@@ -31,7 +31,6 @@ long sonic_get_distance() {
   //Calculate the distance (in cm) based on the speed of sound.
   distance = duration/58.2;
 
-  delay(50);
   //Serial.println(distance);
 
   if(distance < minRange) {
@@ -41,12 +40,14 @@ long sonic_get_distance() {
     return maxRange;
   }
   return distance;
-#endif
-  return 0;
 }
 
 
-void sonic_calibrate() {
+void sonic_calibrate()
+{
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
   alarm_distance = 0;
 
   Serial.println("Calibrating...");
@@ -77,13 +78,16 @@ void sonic_calibrate() {
 }
 
 
-void sonic_alarm() {
+void sonic_loop()
+{
   if(alarm_distance < 50) {
     //return;
   }
   
   long d = sonic_get_distance();
-  delay(50);
+
+  Serial.println(d);
+  return;
 
 #ifdef DEBUG
   Serial.println(d);
@@ -91,7 +95,8 @@ void sonic_alarm() {
   if(d!=0 && d < alarm_distance) {
     Serial.print("detected");
     Serial.println(d);
-    alarm_on();
+    //alarm_on();
+    sound_beep();
   }
 }
 

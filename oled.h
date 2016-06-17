@@ -15,21 +15,27 @@ Written by Limor Fried/Ladyada  for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
+#ifdef USE_OLED
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
+#endif
+
 
 void oled_set_text(const char* text)
 {
+#ifdef USE_OLED
   display.setCursor(0,0);
   display.clearDisplay();
   display.println(text);
   display.display();
+#endif
 }
 
+#ifdef USE_OLED
 void oled_setup()
 {
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
@@ -79,4 +85,4 @@ void oled_loop() {
   display.stopscroll();
 }
 
-
+#endif
