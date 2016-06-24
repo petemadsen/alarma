@@ -143,6 +143,8 @@ void loop()
 #endif
 
   led_loop();
+
+  sonic_loop();
   
 
 

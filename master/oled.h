@@ -15,8 +15,11 @@ Written by Limor Fried/Ladyada  for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
-#ifdef USE_OLED
+#ifndef MY_OLED_H
+#define MY_OLED_H
 
+
+#ifdef USE_OLED
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -35,9 +38,29 @@ void oled_set_text(const char* text)
 #endif
 }
 
+void oled_set_flash_text(const __FlashStringHelper* text)
+{
 #ifdef USE_OLED
+  display.setCursor(0,0);
+  display.clearDisplay();
+  display.println(text);
+  display.display();
+#endif
+}
+
+void oled_set_num(long d)
+{
+#ifdef USE_OLED
+  display.setCursor(0,0);
+  display.clearDisplay();
+  display.println(d);
+  display.display();
+#endif 
+}
+
 void oled_setup()
 {
+#ifdef USE_OLED
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC, I2C_OLED);  // initialize with the I2C addr 0x3D (for the 128x64)
   // init done
@@ -59,15 +82,17 @@ void oled_setup()
   display.setCursor(10,0);
 
   oled_set_text("Bereit");
+#endif
 }
 
 void oled_loop()
 {
+#ifdef USE_OLED
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(10,0);
   display.clearDisplay();
-  display.println("Hallo\nMax!");
+  display.println(F("Hallo\nMax!"));
   display.display();
   delay(1);
  
@@ -84,6 +109,7 @@ void oled_loop()
   display.startscrolldiagleft(0x00, 0x07);
   delay(2000);
   display.stopscroll();
+#endif
 }
 
-#endif
+#endif // MY_OLED_H

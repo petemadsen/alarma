@@ -24,9 +24,9 @@ void buttons_loop()
   if(button_clicked(x, BUTTON_1_MASK)) {
     led_set_mode(LED_MODE_DISCO);
   } else if(button_clicked(x, BUTTON_2_MASK)) {
-    led_set_mode(LED_MODE_NONE);
+    led_set_mode(LED_MODE_FLASH);
   } else if(button_clicked(x, BUTTON_3_MASK)) {
-    led_set_mode(LED_MODE_NONE);
+    led_set_mode(LED_MODE_SONIC);
     led_all_off();
   }
 

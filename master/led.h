@@ -2,20 +2,35 @@
 #define ALARMA_LED_H
 
 #include "i2c.h"
+#include "oled.h"
 
 
 void led_disco_init();
 void led_disco_step();
 
+void led_flash_init();
+void led_flash_step();
+
+void led_sonic_init();
+void led_sonic_step();
+
 
 #define LED_MODE_NONE 0
 #define LED_MODE_DISCO 1
+#define LED_MODE_FLASH 2
+#define LED_MODE_SONIC 3
 uint8_t led_mode = LED_MODE_NONE;
 unsigned long led_last_access = 0;
-
+unsigned short led_access_delay = 0;
 
 // each mode can have its own variables/data
 uint8_t led_disco_steps = 0;
+#define LED_DISCO_DELAY 200
+
+uint8_t led_flash_steps = 0;
+#define LED_FLASH_DELAY 200
+
+#define LED_SONIC_DELAY 1000
 
 
 uint8_t led_state[3] = { 0xff, 0xff, 0xff };
@@ -38,9 +53,21 @@ void led_setup()
 
 void led_loop()
 {
+  unsigned long m = millis();
+    if((unsigned long)(m - led_last_access) < led_access_delay) {
+    return;
+  }
+  led_last_access = m;
+
   switch(led_mode) {
     case LED_MODE_DISCO:
       led_disco_step();
+      break;
+    case LED_MODE_FLASH:
+      led_flash_step();
+      break;
+    case LED_MODE_SONIC:
+      led_sonic_step();
       break;
   }
 }
@@ -54,7 +81,19 @@ void led_set_mode(uint8_t mode)
   led_mode = mode;
   switch(led_mode) {
     case LED_MODE_DISCO:
+      oled_set_flash_text(F("Disko"));
       led_disco_init();
+      break;
+    case LED_MODE_FLASH:
+      oled_set_flash_text(F("Flash"));
+      led_flash_init();
+      break;
+    case LED_MODE_SONIC:
+      oled_set_flash_text(F("Sonic"));
+      led_sonic_init();
+      break;
+    default:
+      oled_set_flash_text(F("Bitte Taste druecken"));
       break;
   }
 }
@@ -186,18 +225,48 @@ void led_set_all(bool red, bool green, bool blue)
 }
 
 
+void led_flash_init()
+{
+  led_flash_steps = 6;
+  led_access_delay = LED_FLASH_DELAY;
+}
+
+
+void led_flash_step()
+{
+  if((led_flash_steps%2) == 0) {
+    led_set_all(true, false, false);
+  } else {
+    led_set_all(false, false, false);
+  }
+  
+  if(--led_flash_steps == 0) {
+    led_set_mode(LED_MODE_NONE);
+  }
+}
+
+
+void led_sonic_init()
+{
+  led_access_delay = LED_SONIC_DELAY;
+}
+
+
+void led_sonic_step()
+{
+  oled_set_num(sonic_get_last_distance());
+}
+
 
 void led_disco_init()
 {
-  led_disco_steps = 100;
+  led_disco_steps = 0;
+  led_access_delay = LED_DISCO_DELAY;
 }
 
 void led_disco_step()
 {
   unsigned long m = millis();
-  if((unsigned long)(m - led_last_access) < 250) {
-    return;
-  }
     
   led_state[0] = m & 0xff;
   led_state[1] = (m >> 8) & 0xff;
@@ -216,10 +285,7 @@ void led_disco_step()
   send_cmd(I2C_PCF8574_2, led_state[1]);
   send_cmd(I2C_PCF8574_3, led_state[2]);
 
-  led_last_access = m;
-  if(--led_disco_steps == 0) {
-    led_set_mode(LED_MODE_NONE);
-  }
+  ++led_disco_steps;
 }
 
 #endif
