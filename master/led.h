@@ -30,7 +30,7 @@ uint8_t led_disco_steps = 0;
 uint8_t led_flash_steps = 0;
 #define LED_FLASH_DELAY 200
 
-#define LED_SONIC_DELAY 1000
+#define LED_SONIC_DELAY 100
 
 
 uint8_t led_state[3] = { 0xff, 0xff, 0xff };
@@ -39,9 +39,9 @@ uint8_t led_state[3] = { 0xff, 0xff, 0xff };
 void led_all_off()
 {
   led_state[0] = led_state[1] = led_state[2] = 0xff;
-  send_cmd(I2C_PCF8574_1, 0xff);
-  send_cmd(I2C_PCF8574_2, 0xff);
-  send_cmd(I2C_PCF8574_3, 0xff);
+  i2c_send_cmd(I2C_PCF8574_1, 0xff);
+  i2c_send_cmd(I2C_PCF8574_2, 0xff);
+  i2c_send_cmd(I2C_PCF8574_3, 0xff);
 }
 
 
@@ -107,31 +107,31 @@ void led_loop_obsolete()
 //  send_cmd(I2C_PCF8574, 0xff);
 //  delay(1 * 1000);
 
-  send_cmd(I2C_PCF8574_1, 0xff);
+  i2c_send_cmd(I2C_PCF8574_1, 0xff);
   delay(500);
   
   int x = 0x80;
   for(int i=0; i<6; ++i) {
-    send_cmd(I2C_PCF8574_1, ~x);
+    i2c_send_cmd(I2C_PCF8574_1, ~x);
     delay(500);
     x >>= 1;
   }
 
-  send_cmd(I2C_PCF8574_1, 0xff);
+  i2c_send_cmd(I2C_PCF8574_1, 0xff);
   delay(500);
 
   x = 0x90;
   for(int i=0; i<3; ++i) {
-    send_cmd(I2C_PCF8574_1, ~x);
+    i2c_send_cmd(I2C_PCF8574_1, ~x);
     delay(500);
     x >>= 1;
   }
 
-  send_cmd(I2C_PCF8574_1, 0xff);
+  i2c_send_cmd(I2C_PCF8574_1, 0xff);
   delay(500);
 
   for(int i=0; i<8; ++i) {
-    send_cmd(I2C_PCF8574_1, ~(i<<5));
+    i2c_send_cmd(I2C_PCF8574_1, ~(i<<5));
     delay(500);
   }
 }
@@ -211,9 +211,9 @@ void led_set(uint8_t num, bool red, bool green, bool blue)
   // make sure that buttons are HIGH
   led_state[2] |= BUTTON_MASK;
 
-  send_cmd(I2C_PCF8574_1, led_state[0]);
-  send_cmd(I2C_PCF8574_2, led_state[1]);
-  send_cmd(I2C_PCF8574_3, led_state[2]);
+  i2c_send_cmd(I2C_PCF8574_1, led_state[0]);
+  i2c_send_cmd(I2C_PCF8574_2, led_state[1]);
+  i2c_send_cmd(I2C_PCF8574_3, led_state[2]);
 }
 
 
@@ -281,9 +281,9 @@ void led_disco_step()
   // make sure that buttons are HIGH
   led_state[2] |= BUTTON_MASK;
   
-  send_cmd(I2C_PCF8574_1, led_state[0]);
-  send_cmd(I2C_PCF8574_2, led_state[1]);
-  send_cmd(I2C_PCF8574_3, led_state[2]);
+  i2c_send_cmd(I2C_PCF8574_1, led_state[0]);
+  i2c_send_cmd(I2C_PCF8574_2, led_state[1]);
+  i2c_send_cmd(I2C_PCF8574_3, led_state[2]);
 
   ++led_disco_steps;
 }

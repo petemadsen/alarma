@@ -5,8 +5,8 @@
 
 
 
-int maxRange = 200; // Maximum range needed
-int minRange = 0; // Minimum range needed
+long maxRange = 1000; // Maximum range needed
+long minRange = 0; // Minimum range needed
 
 long distance = 0; // last distance measured
 
@@ -28,10 +28,13 @@ long sonic_measure_distance()
   delayMicroseconds(2); 
 
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10); 
+  delayMicroseconds(5); 
 
   digitalWrite(trigPin, LOW);
-  long duration = pulseIn(echoPin, HIGH);
+  unsigned long duration = pulseIn(echoPin, HIGH);
+  if(duration == 0) {
+    return maxRange;
+  }
 
   //Calculate the distance (in cm) based on the speed of sound.
   long distance = duration/58.2;

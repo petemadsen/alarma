@@ -46,7 +46,7 @@ void i2c_scan()
 
 
 
-int read_i2c(int addr)
+int i2c_read(int addr)
 {
   Wire.requestFrom(addr, 1);
 
@@ -61,7 +61,7 @@ int read_i2c(int addr)
 }
 
 
-void send_cmd(int wnd, int cmd)
+void i2c_send_cmd(int addr, int cmd)
 {
 #if 0
   Serial.print("ACTION: to 0x");
@@ -70,7 +70,7 @@ void send_cmd(int wnd, int cmd)
   Serial.println(cmd);
 #endif
  
-  Wire.beginTransmission(wnd);
+  Wire.beginTransmission(addr);
   Wire.write(cmd);
   Wire.endTransmission();
 }

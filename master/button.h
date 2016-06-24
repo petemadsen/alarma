@@ -16,7 +16,7 @@ uint8_t button_is_pressed = 0;
 int last_x = 0xff;
 void buttons_loop()
 {
-  uint8_t x = read_i2c(I2C_PCF8574_3);
+  uint8_t x = i2c_read(I2C_PCF8574_3);
   if((last_x & BUTTON_MASK) == (x & BUTTON_MASK)) {
     return;
   }

@@ -145,6 +145,16 @@ void loop()
   led_loop();
 
   sonic_loop();
+
+
+  delay(1000);
+  int x = millis() & 0xff;
+  Serial.print("SENDING: ");
+  Serial.println(x);
+  i2c_send_cmd(I2C_NANO_SLAVE, x);
+  int y = i2c_read(I2C_NANO_SLAVE);
+  Serial.print("RECEIVED: ");
+  Serial.println(y);
   
 
 

@@ -26,6 +26,11 @@
 #define BT_PIN_TX 6
 #define BT_PIN_RX 7
 
+// sonic
+#define echoPin 10 // Echo Pin
+#define trigPin 9 // Trigger Pin
+
+
 // ------------------------------------------------------------------------------
 // Bluetooth
 // ------------------------------------------------------------------------------
@@ -33,13 +38,20 @@
 
 
 
-// sonic
-#define echoPin 10 // Echo Pin
-#define trigPin 9 // Trigger Pin
 
+// ------------------------------------------------------------------------------
+// I2C
+// ------------------------------------------------------------------------------
 #define I2C_PCF8574_1 (0x40>>1)
 #define I2C_PCF8574_2 (0x4e>>1)
 #define I2C_PCF8574_3 (0x7e>>1)
+
+#define I2C_OLED    (0x78>>1)
+
+#define I2C_NANO_SLAVE  (0xA0 >> 1)
+
+
+
 
 #define BUTTON_1_MASK 0x01
 #define BUTTON_2_MASK 0x02
@@ -49,8 +61,6 @@
 #define MODE_STOP 0
 #define MODE_LED_ACTION 1
 #define MODE_OLED_ON 2
-
-#define I2C_OLED    (0x78>>1)
 
 extern void alarm_on();
 
