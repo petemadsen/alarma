@@ -41,7 +41,7 @@ void setup()
   TWBR = 40;
   TWSR |= bit (TWPS0);
   TWSR |= bit (TWPS1);
-  Serial.println(F("[ok] wire"));
+  Serial.println(F("[ok] i2c"));
 
   led_setup();
   Serial.println(F("[ok] led"));
