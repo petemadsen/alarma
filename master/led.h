@@ -3,6 +3,21 @@
 
 #include "i2c.h"
 
+
+void led_disco_init();
+void led_disco_step();
+
+
+#define LED_MODE_NONE 0
+#define LED_MODE_DISCO 1
+uint8_t led_mode = LED_MODE_NONE;
+unsigned long led_last_access = 0;
+
+
+// each mode can have its own variables/data
+uint8_t led_disco_steps = 0;
+
+
 uint8_t led_state[3] = { 0xff, 0xff, 0xff };
 
 
@@ -22,6 +37,29 @@ void led_setup()
 
 
 void led_loop()
+{
+  switch(led_mode) {
+    case LED_MODE_DISCO:
+      led_disco_step();
+      break;
+  }
+}
+
+
+void led_set_mode(uint8_t mode)
+{
+  Serial.print(F("[led] set-mode "));
+  Serial.println(mode);
+  
+  led_mode = mode;
+  switch(led_mode) {
+    case LED_MODE_DISCO:
+      led_disco_init();
+      break;
+  }
+}
+
+void led_loop_obsolete()
 {
   //read_i2c(I2C_PCF8574);
   
@@ -131,6 +169,9 @@ void led_set(uint8_t num, bool red, bool green, bool blue)
       led_state[2] &= ~0x08;
   }
 
+  // make sure that buttons are HIGH
+  led_state[2] |= BUTTON_MASK;
+
   send_cmd(I2C_PCF8574_1, led_state[0]);
   send_cmd(I2C_PCF8574_2, led_state[1]);
   send_cmd(I2C_PCF8574_3, led_state[2]);
@@ -145,23 +186,39 @@ void led_set_all(bool red, bool green, bool blue)
 }
 
 
-void led_disco()
-{
-  for(int i=0; i<20; ++i) {
-    unsigned long m = millis();
-    led_state[0] = m & 0xff;
-    led_state[1] = (m >> 8) & 0xff;
-    led_state[2] = (m >> 16) & 0xff;
-    
-    send_cmd(I2C_PCF8574_1, led_state[0]);
-    send_cmd(I2C_PCF8574_2, led_state[1]);
-    send_cmd(I2C_PCF8574_3, led_state[2]);
-    delay(250);
 
-    send_cmd(I2C_PCF8574_1, ~led_state[0]);
-    send_cmd(I2C_PCF8574_2, ~led_state[1]);
-    send_cmd(I2C_PCF8574_3, ~led_state[2]);
-    delay(250);
+void led_disco_init()
+{
+  led_disco_steps = 100;
+}
+
+void led_disco_step()
+{
+  unsigned long m = millis();
+  if((unsigned long)(m - led_last_access) < 250) {
+    return;
+  }
+    
+  led_state[0] = m & 0xff;
+  led_state[1] = (m >> 8) & 0xff;
+  led_state[2] = (m >> 16) & 0xff;
+
+  if((led_disco_steps%2)) {
+    led_state[0] = ~led_state[0];
+    led_state[1] = ~led_state[1];
+    led_state[2] = ~led_state[2];
+  }
+
+  // make sure that buttons are HIGH
+  led_state[2] |= BUTTON_MASK;
+  
+  send_cmd(I2C_PCF8574_1, led_state[0]);
+  send_cmd(I2C_PCF8574_2, led_state[1]);
+  send_cmd(I2C_PCF8574_3, led_state[2]);
+
+  led_last_access = m;
+  if(--led_disco_steps == 0) {
+    led_set_mode(LED_MODE_NONE);
   }
 }
 

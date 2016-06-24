@@ -102,15 +102,16 @@ bool sound_melody(unsigned char snd)
 
 
 
-void sound_alarm() {
+void sound_alarm()
+{
   //digitalWrite(ledPin, HIGH);
 
-  //tone(tonePin, NOTE_A2);
+  tone(tonePin, NOTE_A2);
   delay (500);
   
   //digitalWrite(ledPin, LOW);
   
-  //tone(tonePin, NOTE_A3);
+  tone(tonePin, NOTE_A3);
   delay (500);
 }
 

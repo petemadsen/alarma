@@ -1,5 +1,9 @@
 #include "common.h"
 #include "i2c.h"
+#include "led.h"
+
+
+bool button_clicked(uint8_t buttons, uint8_t mask);
 
 
 void buttons_setup()
@@ -7,25 +11,40 @@ void buttons_setup()
 }
 
 
+uint8_t button_is_pressed = 0;
 
 int last_x = 0xff;
-int buttons_loop()
+void buttons_loop()
 {
-  int x = read_i2c(I2C_PCF8574_3);
-  if(last_x == x) {
-    return -1;
+  uint8_t x = read_i2c(I2C_PCF8574_3);
+  if((last_x & BUTTON_MASK) == (x & BUTTON_MASK)) {
+    return;
+  }
+
+  if(button_clicked(x, BUTTON_1_MASK)) {
+    led_set_mode(LED_MODE_DISCO);
+  } else if(button_clicked(x, BUTTON_2_MASK)) {
+    led_set_mode(LED_MODE_NONE);
+  } else if(button_clicked(x, BUTTON_3_MASK)) {
+    led_set_mode(LED_MODE_NONE);
+    led_all_off();
   }
 
   last_x = x;
-  
-  if((x & BUTTON_1) == 0)
-    return BUTTON_1;
-  if((x & BUTTON_2) == 0)
-    return BUTTON_2;
-  if((x & BUTTON_3) == 0)
-    return BUTTON_3;
-    
-  return -1;
+}
+
+
+bool button_clicked(uint8_t buttons, uint8_t mask)
+{
+  if((buttons & mask) == 0) {
+    // remember is pressed
+    button_is_pressed |= mask;
+  } else if(button_is_pressed & mask) {
+    button_is_pressed &= ~mask;
+    return true;
+  }
+
+  return false;
 }
 
 

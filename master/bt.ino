@@ -9,6 +9,7 @@ SoftwareSerial myBTSerial(BT_PIN_TX, BT_PIN_RX);
 #define BT_CMD_LIGHTS 'L'
 #define BT_CMD_BEEP 'B'
 #define BT_CMD_MELODY 'M'
+#define BT_CMD_ALARM 'A'
 #define BT_CMD_STOP 'S'
 #define BT_CMD_TEXT 'T'
 

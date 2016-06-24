@@ -134,6 +134,17 @@ void loop()
 {
   //CHECK_BUTTONS();
 
+  bt_loop();
+
+  buttons_loop();
+
+#ifdef USE_RFID
+  rfid_loop();
+#endif
+
+  led_loop();
+  
+
 
 #if 0
   if(mode == MODE_LED_ACTION) {
@@ -175,10 +186,6 @@ void loop()
   if(mode_oled == MODE_OLED_ON) {
     //oled_loop();
   }
-
-#ifdef USE_RFID
-  rfid_loop();
-#endif
   
   
   /**
@@ -215,8 +222,6 @@ void loop()
 
   //sonic_loop();
   // button_alarm();
-
-  bt_loop();
 
 }
 

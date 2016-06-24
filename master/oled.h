@@ -61,7 +61,8 @@ void oled_setup()
   oled_set_text("Bereit");
 }
 
-void oled_loop() {
+void oled_loop()
+{
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(10,0);
