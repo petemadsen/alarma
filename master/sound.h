@@ -6,9 +6,9 @@
 
 
 // notes in the melody, // note durations: 4 = quarter note, 8 = eighth note, etc.
-int melody_enter[] = {
+const unsigned short melody_enter[] PROGMEM = {
   NOTE_C4, 4, NOTE_G3, 8, NOTE_G3, 8, NOTE_A3, 4, NOTE_G3, 4, 0, 4, NOTE_B3, 4, NOTE_C4, 4, -1};
-int melody_brother_jakob[] = {
+const unsigned short melody_brother_jakob[] PROGMEM = {
   NOTE_C4, 4, NOTE_D4, 4, NOTE_E4, 4, NOTE_C4, 4,
   NOTE_C4, 4, NOTE_D4, 4, NOTE_E4, 4, NOTE_C4, 4,
   NOTE_E4, 4, NOTE_F4, 4, NOTE_G4, 2,
@@ -18,7 +18,7 @@ int melody_brother_jakob[] = {
   NOTE_C4, 2, NOTE_A3, 2, NOTE_C4, 1,
   NOTE_C4, 2, NOTE_A3, 2, NOTE_C4, 1,
   -1};
-int melody_happy_birthday[] = {
+const unsigned short melody_happy_birthday[] PROGMEM = {
   NOTE_G4, 4, NOTE_G4, 4, NOTE_A4, 2, NOTE_G4, 2, NOTE_C5, 2, NOTE_B4, 1,
   NOTE_G4, 4, NOTE_G4, 4, NOTE_A4, 2, NOTE_G4, 2, NOTE_D5, 2, NOTE_C5, 1,
   NOTE_G4, 4, NOTE_G4, 4, NOTE_G5, 2, NOTE_E5, 2, NOTE_C5, 2, NOTE_B4, 2, NOTE_A4, 2,
@@ -29,7 +29,7 @@ int melody_happy_birthday[] = {
 #define NR_MELODIES 3
 unsigned char sound_next_melody = NR_MELODIES;  // which sound to play
 
-int* melodies[] = {
+const unsigned short* melodies[] = {
   melody_enter,
   melody_brother_jakob,
   melody_happy_birthday
@@ -71,7 +71,7 @@ bool sound_melody(unsigned char snd)
   }
   
   int thisNote = 0;
-  int* notes = melodies[snd];
+  const unsigned short* notes = melodies[snd];
 
   Serial.println("[melody]");
 

@@ -10,6 +10,7 @@ SoftwareSerial myBTSerial(BT_PIN_TX, BT_PIN_RX);
 #define BT_CMD_BEEP 'B'
 #define BT_CMD_MELODY 'M'
 #define BT_CMD_STOP 'S'
+#define BT_CMD_TEXT 'T'
 
 
 #define MAX_BT_BUF_LEN 10
@@ -53,6 +54,7 @@ void bt_loop()
 
     if(ch < ' ' || ch > 'z') {
       if(bt_rcv_buffer_cnt != 0) {
+        bt_rcv_buffer[bt_rcv_buffer_cnt] = 0;
         bool ok = bt_parse_command();
         bt_rcv_buffer_cnt = 0;
         myBTSerial.println(ok ? "ok" : "err");
@@ -90,20 +92,28 @@ bool bt_parse_command()
         led_set_all(r, g, b);
       }
       return true;
+      
     case BT_CMD_BEEP:
       sound_beep();
       return true;
+      
     case BT_CMD_MELODY:
       int_param = bt_parse_dec(1);
       if(int_param != -1) {
         return sound_melody(int_param);
       }
       return false;
+      
     case BT_CMD_STOP:
       led_set_all(false, false, false);
       return true;
+
+    case BT_CMD_TEXT:
+      oled_set_text((const char*)&bt_rcv_buffer[1]);
+      return true;
+      
     case BT_CMD_HELP:
-      myBTSerial.println("B M[NUM] L[01][01][01]");
+      myBTSerial.println("B M[NUM] L[01][01][01] T[text]");
       return true;
   }
 

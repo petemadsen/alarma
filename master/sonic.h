@@ -50,14 +50,14 @@ void sonic_calibrate()
   
   alarm_distance = 0;
 
-  Serial.println("Calibrating...");
+  Serial.println(F("Calibrating..."));
   
   for(int i=0; i<10; ++i) {
     long d = sonic_get_distance();
     
-    Serial.print("step ");
+    Serial.print(F("step "));
     Serial.print(i);
-    Serial.print(" | ");
+    Serial.print(F(" | "));
     Serial.print(d);
     
     if(i==0) {
@@ -67,13 +67,13 @@ void sonic_calibrate()
       alarm_distance = (alarm_distance + d) / 2;
     }
     
-    Serial.print(" | ");
+    Serial.print(F(" | "));
     Serial.println(alarm_distance);
   }
 
   alarm_distance -= 10;
 
-  Serial.print("calibrated at ");
+  Serial.print(F("calibrated at "));
   Serial.println(alarm_distance);
 }
 

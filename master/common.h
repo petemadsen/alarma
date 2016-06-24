@@ -2,6 +2,11 @@
 #define COMMON_H
 
 //#define DEBUG
+// Enable/Disabled modules as you need
+#define USE_OLED
+//#define USE_RFID
+
+
 
 //#define alarmPin 2 // digital
 #define tonePin 8  // digital
@@ -40,8 +45,5 @@
 extern void alarm_on();
 
 extern void alarm_off();
-
-//#define USE_OLED
-//#define USE_RFID
 
 #endif
