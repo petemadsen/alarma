@@ -44,7 +44,7 @@ void play_melody();
 
 void sound_beep()
 {
-  Serial.println("[beep]");
+  Serial.println(F("[snd] beep"));
   tone(tonePin, NOTE_A1);
   delay(250);
   noTone(tonePin);
@@ -73,7 +73,8 @@ bool sound_melody(unsigned char snd)
   int thisNote = 0;
   const unsigned short* notes = melodies[snd];
 
-  Serial.println("[melody]");
+  Serial.print(F("[snd] playing "));
+  Serial.println(snd);
 
   // iterate over the notes of the melody:
   while (notes[thisNote] != -1) {

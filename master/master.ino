@@ -16,7 +16,7 @@ int alarm_is_on = 0;
 
 void alarm_on() {
   alarm_is_on = 1;
-  Serial.println("ALARM");
+  Serial.println(F("ALARM"));
 }
 
 void alarm_off() {
@@ -61,7 +61,7 @@ void setup()
 #endif
 
   //mp3_setup();
-  //Serial.println("[ok] mp3");
+  //Serial.println(F("[ok] mp3"));
 
   sound_setup();
 
@@ -80,7 +80,7 @@ void setup()
 
 
 
-  Serial.println("[OK] INIT");
+  Serial.println(F("[OK] INIT"));
 }
 
 
@@ -88,6 +88,7 @@ int mode = MODE_LED_ACTION;
 int mode_oled = MODE_STOP;
 
 
+#if 0
 #define CHECK_BUTTONS() if(handle_buttons()) return;
 bool handle_buttons()
 {
@@ -126,7 +127,7 @@ bool handle_buttons()
 
   return true;
 }
-
+#endif
 
 
 void loop()

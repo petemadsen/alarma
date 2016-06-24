@@ -93,7 +93,7 @@ void sonic_loop()
   Serial.println(d);
 #endif
   if(d!=0 && d < alarm_distance) {
-    Serial.print("detected");
+    Serial.print(F("detected"));
     Serial.println(d);
     //alarm_on();
     sound_beep();

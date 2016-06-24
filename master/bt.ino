@@ -13,8 +13,8 @@ SoftwareSerial myBTSerial(BT_PIN_TX, BT_PIN_RX);
 #define BT_CMD_TEXT 'T'
 
 
-#define MAX_BT_BUF_LEN 10
-unsigned char bt_rcv_buffer[MAX_BT_BUF_LEN];
+#define MAX_BT_BUF_LEN 20
+unsigned char bt_rcv_buffer[MAX_BT_BUF_LEN + 1];
 unsigned char bt_rcv_buffer_cnt = 0;
 
 
@@ -57,10 +57,12 @@ void bt_loop()
         bt_rcv_buffer[bt_rcv_buffer_cnt] = 0;
         bool ok = bt_parse_command();
         bt_rcv_buffer_cnt = 0;
-        myBTSerial.println(ok ? "ok" : "err");
+        myBTSerial.println(ok ? F("ok") : F("err"));
       }
     } else {
-      bt_rcv_buffer[bt_rcv_buffer_cnt++] = ch;
+      if(bt_rcv_buffer_cnt < MAX_BT_BUF_LEN) {
+        bt_rcv_buffer[bt_rcv_buffer_cnt++] = ch;
+      }
     }
 
     //cmd_add_char(myBTSerial);    
@@ -113,7 +115,7 @@ bool bt_parse_command()
       return true;
       
     case BT_CMD_HELP:
-      myBTSerial.println("B M[NUM] L[01][01][01] T[text]");
+      myBTSerial.println(F("B M[NUM] L[01][01][01] T[text]"));
       return true;
   }
 
@@ -136,7 +138,7 @@ int bt_parse_dec(unsigned char pos)
     return -1;
   }
   
-  Serial.print("endpos: ");
+  Serial.print(F("endpos: "));
   Serial.println(endpos);
 
   int factor = 1;
@@ -145,7 +147,7 @@ int bt_parse_dec(unsigned char pos)
     factor *= 10;
   }
 
-  Serial.print("bt-dec-num: ");
+  Serial.print(F("bt-dec-num: "));
   Serial.print(num);
   return num;
 }
