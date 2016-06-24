@@ -11,6 +11,14 @@
 #define MP3_NEXT_PIN 3
 #define MP3_PREV_PIN 2
 
+
+#define BT_PIN_POWER 4
+#define BT_PIN_TX 6
+#define BT_PIN_RX 7
+#define BT_BAUD 9600
+
+
+
 // sonic
 #define echoPin 10 // Echo Pin
 #define trigPin 9 // Trigger Pin

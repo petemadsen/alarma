@@ -65,11 +65,13 @@ void setup()
 
   sound_setup();
 
+  bt_setup();
+
   //play_melody();
   sonic_calibrate();
   sound_beep();
 
-  led_disco();
+  //led_disco();
   led_all_off();
 
   //pinMode(ledPin, OUTPUT);
@@ -210,8 +212,10 @@ void loop()
 //    return;
 //  }
 
-  sonic_loop();
+  //sonic_loop();
   // button_alarm();
+
+  bt_loop();
 
 }
 
