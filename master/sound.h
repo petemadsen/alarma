@@ -27,7 +27,7 @@ int melody_happy_birthday[] = {
 };
 
 #define NR_MELODIES 3
-int snd = NR_MELODIES;  // which sound to play
+unsigned char sound_next_melody = NR_MELODIES;  // which sound to play
 
 int* melodies[] = {
   melody_enter,
@@ -64,9 +64,14 @@ void sound_setup()
 
 
 
-void sound_melody() {
+bool sound_melody(unsigned char snd)
+{
+  if(snd >= NR_MELODIES) {
+    return false;
+  }
+  
   int thisNote = 0;
-  int* notes = melodies[snd%NR_MELODIES];
+  int* notes = melodies[snd];
 
   Serial.println("[melody]");
 
@@ -88,6 +93,8 @@ void sound_melody() {
     // next note
     thisNote += 2;
   }
+
+  return true;
 }
 
 
