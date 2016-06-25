@@ -148,6 +148,7 @@ void loop()
 
   sonic_loop();
 
+  sound_loop();
   
 
 

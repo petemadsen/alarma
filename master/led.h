@@ -266,11 +266,9 @@ void led_disco_init()
 
 void led_disco_step()
 {
-  unsigned long m = millis();
-    
-  led_state[0] = m & 0xff;
-  led_state[1] = (m >> 8) & 0xff;
-  led_state[2] = (m >> 16) & 0xff;
+  led_state[0] = led_last_access & 0xff;
+  led_state[1] = (led_last_access >> 8) & 0xff;
+  led_state[2] = (led_last_access >> 16) & 0xff;
 
   if((led_disco_steps%2)) {
     led_state[0] = ~led_state[0];

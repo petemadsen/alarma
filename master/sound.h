@@ -2,7 +2,7 @@
 #define SOUND_H
 
 
-
+unsigned long snd_last_access = 0;
 
 
 // notes in the melody, // note durations: 4 = quarter note, 8 = eighth note, etc.
@@ -25,14 +25,19 @@ const int melody_happy_birthday[] PROGMEM = {
   NOTE_F5, 4, NOTE_F5, 4, NOTE_E5, 2, NOTE_C5, 2, NOTE_D5, 2, NOTE_C5, 1,
   -1
 };
+const int melody_beep[] PROGMEM = {
+  NOTE_A1, 4,
+  -1
+};
 
-#define NR_MELODIES 3
+#define NR_MELODIES 4
 unsigned char sound_next_melody = NR_MELODIES;  // which sound to play
 
 const int* melodies[] = {
   melody_enter,
   melody_brother_jakob,
-  melody_happy_birthday
+  melody_happy_birthday,
+  melody_beep
 };
 
 
@@ -62,6 +67,19 @@ void sound_setup()
 }
 
 
+void sound_loop()
+{
+  unsigned long m = millis();
+  if((unsigned long)(m - snd_last_access) < 5) {
+    return;
+  }
+  if((m - snd_last_access) > 15) {
+    Serial.print("BAD");
+    Serial.println(m - snd_last_access);
+  }
+
+    snd_last_access = m;
+}
 
 
 bool sound_melody(unsigned char snd)
@@ -82,12 +100,12 @@ bool sound_melody(unsigned char snd)
     if(note == -1) {
       break;
     }
-    int next_note = pgm_read_word(melody + thisNote + 1);
+    int note_duration = pgm_read_word(melody + thisNote + 1);
     
     // to calculate the note duration, take one second 
     // divided by the note type.
     //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    int noteDuration = 1000/next_note;
+    int noteDuration = 1000/note_duration;
     tone(tonePin, note, noteDuration);
 
     // to distinguish the notes, set a minimum time between them.
