@@ -25,42 +25,45 @@ All text above, and the splash screen must be included in any redistribution
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
-#endif
 
 
 void oled_set_text(const char* text)
 {
-#ifdef USE_OLED
   display.setCursor(0,0);
   display.clearDisplay();
   display.println(text);
   display.display();
-#endif
 }
 
 void oled_set_flash_text(const __FlashStringHelper* text)
 {
-#ifdef USE_OLED
   display.setCursor(0,0);
   display.clearDisplay();
   display.println(text);
   display.display();
-#endif
+}
+
+void oled_set_menu(const char* const strings[], unsigned char current, unsigned char num2display)
+{
+  display.setCursor(0, 0);
+  display.clearDisplay();
+  for(unsigned int i=0; i<num2display; ++i) {
+    display.print(i==current ? F("> ") : F("  "));
+    display.println(strings[i]);
+  }
+  display.display();
 }
 
 void oled_set_num(long d)
 {
-#ifdef USE_OLED
   display.setCursor(0,0);
   display.clearDisplay();
   display.println(d);
   display.display();
-#endif 
 }
 
 void oled_setup()
 {
-#ifdef USE_OLED
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC, I2C_OLED);  // initialize with the I2C addr 0x3D (for the 128x64)
   // init done
@@ -81,13 +84,11 @@ void oled_setup()
   display.setTextColor(WHITE);
   display.setCursor(10,0);
 
-  oled_set_text("Bereit");
-#endif
+  oled_set_flash_text(F("Bereit"));
 }
 
 void oled_loop()
 {
-#ifdef USE_OLED
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(10,0);
@@ -109,7 +110,15 @@ void oled_loop()
   display.startscrolldiagleft(0x00, 0x07);
   delay(2000);
   display.stopscroll();
-#endif
 }
+
+#else // USE_OLED
+
+void oled_set_menu(const char* const strings[], unsigned char current, unsigned char num2display) {}
+void oled_set_flash_text(const __FlashStringHelper* text) {}
+void oled_set_text(const char* text) {}
+void oled_set_num(long d) {}
+
+#endif // USE_OLED
 
 #endif // MY_OLED_H

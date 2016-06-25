@@ -3,10 +3,14 @@
 #define MY_DEVICE_ADDR (0xA0>>1)
 #define I2C_CMD_GET_BUTTON 'b' // resets press event
 #define I2C_CMD_GET_ROTARY 'r'
+#define I2C_CMD_GET_UP 'u'
+#define I2C_CMD_GET_DOWN 'd'
 #define LED_PIN 13
 
 int i2c_reply = 0xff;
 bool button_is_pressed = false;
+bool button_is_up = false;
+bool button_is_down = false;
 
 
 
@@ -92,6 +96,14 @@ void do_command(int cmd, int param)
   case I2C_CMD_GET_ROTARY:
     i2c_reply = brightness;
     break;
+  case I2C_CMD_GET_UP:
+    i2c_reply = button_is_up;
+    button_is_up = false;
+    break;
+  case I2C_CMD_GET_DOWN:
+    i2c_reply = button_is_down;
+    button_is_down = false;
+    break;
   default:
     i2c_reply = 0xff;
     break;
@@ -127,11 +139,13 @@ void loop()
         // B is high so clockwise
         // increase the brightness, dont go over 255
         if(brightness + fadeAmount <= 255) brightness += fadeAmount;               
+        button_is_up = true;
       }   
       else {
         // B is low so counter-clockwise      
         // decrease the brightness, dont go below 0
         if(brightness - fadeAmount >= 0) brightness -= fadeAmount;               
+        button_is_down = true;
       }   
 
     }   

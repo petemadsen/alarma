@@ -2,6 +2,11 @@
 #define I2C_H
 
 
+void menu_up();
+void menu_down();
+void menu_click();
+
+
 void i2c_send_cmd(int addr, int cmd);
 int i2c_read(int addr);
 
@@ -17,12 +22,24 @@ void i2c_loop()
   reply = i2c_read(I2C_NANO_SLAVE);
   //Serial.println(reply);
   if(reply) {
-    sound_beep();
+    menu_click();
   }
 
-  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_ROTARY);
-  reply = i2c_read(I2C_NANO_SLAVE);
+//  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_ROTARY);
+//  reply = i2c_read(I2C_NANO_SLAVE);
   //Serial.println(reply);
+
+  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_UP);
+  reply = i2c_read(I2C_NANO_SLAVE);
+  if(reply) {
+    menu_up();
+  }
+
+  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_DOWN);
+  reply = i2c_read(I2C_NANO_SLAVE);
+  if(reply) {
+    menu_down();
+  }
 }
 
 
