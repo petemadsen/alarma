@@ -1,10 +1,33 @@
 #include <Wire.h>
 
 #define MY_DEVICE_ADDR (0xA0>>1)
+#define I2C_CMD_GET_BUTTON 'b' // resets press event
+#define I2C_CMD_GET_ROTARY 'r'
 #define LED_PIN 13
 
+int i2c_reply = 0xff;
+bool button_is_pressed = false;
 
-int last_cmd = 0;
+
+
+const int pin_A = 12;  // pin 12
+const int pin_button = 11;
+const int pin_B = 10;  // pin 11
+
+
+unsigned long currentTime;
+unsigned long loopTime;
+
+
+int brightness = 120;
+int prev_brightness = brightness;
+int fadeAmount = 10;
+unsigned char encoder_A;
+unsigned char encoder_B;
+unsigned char encoder_A_prev = 0;
+unsigned char encoder_button = 0;
+
+
 bool do_blink = false;
 
 
@@ -18,9 +41,21 @@ void setup()
   Wire.onRequest(i2c_read_buttons);
   Wire.onReceive(i2c_action);
 
+  // using internal pull-up
+  pinMode(pin_A, INPUT);
+  digitalWrite(pin_A, HIGH);
+  pinMode(pin_B, INPUT);
+  digitalWrite(pin_B, HIGH);
+
+  pinMode(pin_button, INPUT);
+  digitalWrite(pin_button, HIGH);
+
   Serial.println("Go");
-  Serial.print("Address: 0x");
+  Serial.print("i2c address: 0x");
   Serial.println(MY_DEVICE_ADDR << 1, HEX);
+
+  currentTime = millis();
+  loopTime = currentTime;
 }
 
 
@@ -29,7 +64,7 @@ void setup()
  */
 void i2c_read_buttons()
 {
-  Wire.write(last_cmd); // no button pressed
+  Wire.write(i2c_reply);
 }
 
 void i2c_action(int numBytes)
@@ -47,10 +82,20 @@ void i2c_action(int numBytes)
 
 void do_command(int cmd, int param)
 {
-  Serial.print("CMD: ");
-  Serial.println(cmd);
-  last_cmd = cmd;
-  do_blink = true;
+  //do_blink = true;
+
+  switch(cmd) {
+  case I2C_CMD_GET_BUTTON:
+    i2c_reply = button_is_pressed;
+    button_is_pressed = false;
+    break;
+  case I2C_CMD_GET_ROTARY:
+    i2c_reply = brightness;
+    break;
+  default:
+    i2c_reply = 0xff;
+    break;
+  }
 }
 
 
@@ -58,9 +103,8 @@ void blink()
 {
   Serial.println("blink");
   digitalWrite(LED_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);              // wait for a second
+  delay(500);              // wait for a second
   digitalWrite(LED_PIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);              // wait for a second
 }
 
 
@@ -69,5 +113,46 @@ void loop()
   if(do_blink) {
     blink();
     do_blink = false;
+  }
+
+  // get the current elapsed time
+  currentTime = millis();
+  if(currentTime >= (loopTime + 2*5)){
+    // 5ms since last check of encoder = 200Hz  
+    encoder_A = digitalRead(pin_A);    // Read encoder pins
+    encoder_B = digitalRead(pin_B);   
+    if((!encoder_A) && (encoder_A_prev)){
+      // A has gone from high to low 
+      if(encoder_B) {
+        // B is high so clockwise
+        // increase the brightness, dont go over 255
+        if(brightness + fadeAmount <= 255) brightness += fadeAmount;               
+      }   
+      else {
+        // B is low so counter-clockwise      
+        // decrease the brightness, dont go below 0
+        if(brightness - fadeAmount >= 0) brightness -= fadeAmount;               
+      }   
+
+    }   
+    encoder_A_prev = encoder_A;     // Store value of A for next time    
+    
+    // set the brightness of pin 9:
+    //analogWrite(9, brightness);   
+    if(prev_brightness != brightness) {
+      prev_brightness = brightness;
+      Serial.print("brightness: ");
+      Serial.println(brightness);
+    }
+
+    // check if button pressed
+    unsigned char isup = digitalRead(pin_button);
+    if(!isup && encoder_button) {
+      button_is_pressed = true;
+      Serial.println("pressed");
+    }
+    encoder_button = isup;
+   
+    loopTime = currentTime;  // Updates loopTime
   }
 }

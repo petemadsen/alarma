@@ -2,6 +2,30 @@
 #define I2C_H
 
 
+void i2c_send_cmd(int addr, int cmd);
+int i2c_read(int addr);
+
+
+/**
+ * Reads the i2c bus
+ */
+void i2c_loop()
+{
+  int reply;
+  
+  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_BUTTON);
+  reply = i2c_read(I2C_NANO_SLAVE);
+  //Serial.println(reply);
+  if(reply) {
+    sound_beep();
+  }
+
+  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_ROTARY);
+  reply = i2c_read(I2C_NANO_SLAVE);
+  //Serial.println(reply);
+}
+
+
 void i2c_scan()
 {
   byte error, address;
