@@ -43,12 +43,12 @@ void oled_set_flash_text(const __FlashStringHelper* text)
   display.display();
 }
 
-void oled_set_menu(const char* const strings[], unsigned char current, unsigned char num2display)
+void oled_set_menu(const char* const strings[], unsigned char current, unsigned char from, unsigned char num2display)
 {
   display.setCursor(0, 0);
   display.clearDisplay();
-  for(unsigned int i=0; i<num2display; ++i) {
-    display.print(i==current ? F("> ") : F("  "));
+  for(unsigned char i=from; i<from+num2display; ++i) {
+    display.print(i==current ? F("> ") : F(". "));
     display.println(strings[i]);
   }
   display.display();
@@ -74,21 +74,13 @@ void oled_setup()
   display.display();
   delay(2000);
 
-  // Clear the buffer.
-  display.clearDisplay();
-
-  // draw a single pixel
-  display.drawPixel(10, 10, WHITE);
-
   display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.setCursor(10,0);
-
-  oled_set_flash_text(F("Bereit"));
 }
 
 void oled_loop()
 {
+#if 0
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(10,0);
@@ -110,11 +102,12 @@ void oled_loop()
   display.startscrolldiagleft(0x00, 0x07);
   delay(2000);
   display.stopscroll();
+#endif
 }
 
 #else // USE_OLED
 
-void oled_set_menu(const char* const strings[], unsigned char current, unsigned char num2display) {}
+void oled_set_menu(const char* const strings[], unsigned char current, unsigned char max_nums, unsigned char num2display) {}
 void oled_set_flash_text(const __FlashStringHelper* text) {}
 void oled_set_text(const char* text) {}
 void oled_set_num(long d) {}
