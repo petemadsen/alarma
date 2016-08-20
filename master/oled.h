@@ -1,20 +1,3 @@
-/*********************************************************************
-This is an example for our Monochrome OLEDs based on SSD1306 drivers
-
-  Pick one up today in the adafruit shop!
-  ------> http://www.adafruit.com/category/63_98
-
-This example is for a 128x64 size display using I2C to communicate
-3 pins are required to interface (2 I2C and one reset)
-
-Adafruit invests time and resources providing this open source code, 
-please support Adafruit and open-source hardware by purchasing 
-products from Adafruit!
-
-Written by Limor Fried/Ladyada  for Adafruit Industries.  
-BSD license, check license.txt for more information
-All text above, and the splash screen must be included in any redistribution
-*********************************************************************/
 #ifndef MY_OLED_H
 #define MY_OLED_H
 
@@ -29,43 +12,9 @@ unsigned long oled_last_access = 0;
 U8GLIB_SSD1306_128X64 display(U8G_I2C_OPT_NONE|U8G_I2C_OPT_DEV_0);  // I2C / TWI
 
 
-void oled_set_text(const char* text)
-{
-#if 0
-  display.setCursor(0,0);
-  display.clearDisplay();
-  display.println(text);
-  display.display();
-#endif
-}
+typedef void (*oled_draw_func_p)(const U8GLIB&);
+oled_draw_func_p oled_draw_func = 0;
 
-void oled_set_flash_text(const __FlashStringHelper* text)
-{
-#if 0
-  display.setCursor(0,0);
-  display.clearDisplay();
-  display.println(text);
-  display.display();
-#endif
-}
-
-void oled_set_menu(const char* const strings[], unsigned char current, unsigned char from, unsigned char num2display)
-{
-#if 0
-  display.setCursor(0, 0);
-  display.clearDisplay();
-  for(unsigned char i=from; i<from+num2display; ++i) {
-    display.print(i==current ? F("> ") : F(". "));
-    display.println(strings[i]);
-  }
-  display.display();
-#endif
-}
-
-void oled_set_num(long d)
-{
-  //display.drawString(0, 0, d);
-}
 
 void oled_setup()
 {
@@ -112,12 +61,16 @@ void oled_loop()
     return;
   }
   oled_last_access = m;
-  
+
   // picture loop
   display.firstPage();  
   do {
-    display.setFont(u8g_font_unifont);
-    display.drawStr(0, 22, "Ready");
+    if(oled_draw_func) {
+      oled_draw_func(display);
+    } else {
+      display.setFont(u8g_font_unifont);
+      display.drawStr(0, 22, "???");
+    }
   } while( display.nextPage() );
   
 #if 0
@@ -144,6 +97,40 @@ void oled_loop()
   display.stopscroll();
 #endif
 }
+
+
+void oled_set_draw_function(oled_draw_func_p f)
+{
+  oled_draw_func = f;
+}
+
+
+void oled_set_text(const char* text)
+{
+#if 0
+  display.setCursor(0,0);
+  display.clearDisplay();
+  display.println(text);
+  display.display();
+#endif
+}
+
+void oled_set_flash_text(const __FlashStringHelper* text)
+{
+#if 0
+  display.setCursor(0,0);
+  display.clearDisplay();
+  display.println(text);
+  display.display();
+#endif
+}
+
+
+void oled_set_num(long d)
+{
+  //display.drawString(0, 0, d);
+}
+
 
 #else // USE_OLED
 

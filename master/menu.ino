@@ -19,6 +19,7 @@ const char* const menu5 PROGMEM = "Melody2";
 
 const char* const menu_items[] = {menu0, menu1, menu2, menu3, menu4, menu5};
 
+
 void menu_up()
 {
   if(menu_item == MENU_NR_ITEMS)
@@ -28,7 +29,7 @@ void menu_up()
     --menu_item;
     if(menu_item < menu_display_top)
       --menu_display_top;
-    menu_update();
+    oled_set_draw_function(menu_draw);
   }
 }
 
@@ -42,7 +43,7 @@ void menu_down()
     ++menu_item;
     if(menu_item >= (menu_display_top+MENU_DISPLAY_ITEMS))
         ++menu_display_top;
-    menu_update();
+    oled_set_draw_function(menu_draw);
   }
 }
 
@@ -73,13 +74,24 @@ void menu_click()
     }
   }
   
-  menu_update();
+  oled_set_draw_function(menu_draw);
 }
 
-void menu_update()
+
+void menu_draw(const U8GLIB& d)
 {
-  oled_set_menu(menu_items, menu_item, menu_display_top, MENU_DISPLAY_ITEMS);
+  // const char* const strings[], unsigned char current, unsigned char from, unsigned char num2display
+  // menu_items, menu_item, menu_display_top, MENU_DISPLAY_ITEMS
+
+  u8g_uint_t y = d.getFontAscent();
+  
+  for(unsigned char i=menu_display_top; i<menu_display_top+MENU_DISPLAY_ITEMS; ++i) {
+    d.drawStr(0, y, i==menu_item ? F("> ") : F(". "));
+    d.drawStr(20, y, menu_items[i]);
+    y += d.getFontAscent();
+  }
 }
+
 
 
 #endif
