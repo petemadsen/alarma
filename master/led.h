@@ -1,9 +1,13 @@
 #ifndef ALARMA_LED_H
 #define ALARMA_LED_H
 
+#include "common.h"
 #include "i2c.h"
 #include "oled.h"
 
+
+
+void led_sonic_draw(U8GLIB& d);
 
 void led_disco_init();
 void led_disco_step();
@@ -89,14 +93,21 @@ void led_set_mode(uint8_t mode)
       led_flash_init();
       break;
     case LED_MODE_SONIC:
-      oled_set_flash_text(F("Sonic"));
       led_sonic_init();
+      oled_set_draw_function(led_sonic_draw);
       break;
     default:
       oled_set_flash_text(F("Bitte Taste druecken"));
       break;
   }
 }
+
+
+uint8_t led_get_mode()
+{
+  return led_mode;
+}
+
 
 void led_loop_obsolete()
 {
@@ -250,11 +261,16 @@ void led_sonic_init()
 {
   led_access_delay = LED_SONIC_DELAY;
 }
-
-
+void led_sonic_draw(U8GLIB& d)
+{
+  char buf[12];
+  sprintf(buf, "> %d cm", sonic_get_last_distance());
+  //d.drawStr(0, d.getFontAscent(), buf);
+  //Serial.println(buf);
+  d.drawStr(0, 33, buf);
+}
 void led_sonic_step()
 {
-  oled_set_num(sonic_get_last_distance());
 }
 
 

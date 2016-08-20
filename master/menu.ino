@@ -20,6 +20,12 @@ const char* const menu5 PROGMEM = "Melody2";
 const char* const menu_items[] = {menu0, menu1, menu2, menu3, menu4, menu5};
 
 
+void menu_init()
+{
+  //oled_set_draw_function(menu_draw);
+}
+
+
 void menu_up()
 {
   if(menu_item == MENU_NR_ITEMS)
@@ -58,13 +64,20 @@ void menu_click()
     switch(menu_item) {
       case 0:
         led_set_mode(LED_MODE_DISCO);
+        oled_set_draw_function(menu_draw);
         break;
       case 1:
         led_set_mode(LED_MODE_FLASH);
+        oled_set_draw_function(menu_draw);
         break;
       case 2:
-        led_set_mode(LED_MODE_SONIC);
-        led_all_off();
+        if(led_get_mode() == LED_MODE_SONIC) {
+          led_set_mode(LED_MODE_NONE);
+          oled_set_draw_function(menu_draw);
+        } else {
+          led_set_mode(LED_MODE_SONIC);
+          led_all_off();
+        }
       case 3:
       case 4:
       case 5:
@@ -73,12 +86,10 @@ void menu_click()
       break;
     }
   }
-  
-  oled_set_draw_function(menu_draw);
 }
 
 
-void menu_draw(const U8GLIB& d)
+void menu_draw(U8GLIB& d)
 {
   // const char* const strings[], unsigned char current, unsigned char from, unsigned char num2display
   // menu_items, menu_item, menu_display_top, MENU_DISPLAY_ITEMS

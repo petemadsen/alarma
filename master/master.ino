@@ -78,6 +78,7 @@ void setup()
   //
   //pinMode(modePin, INPUT);
 
+  menu_init();
 
 
   Serial.println(F("[OK] INIT"));
@@ -226,7 +227,6 @@ void loop()
 //    return;
 //  }
 
-  //sonic_loop();
   // button_alarm();
 
 }

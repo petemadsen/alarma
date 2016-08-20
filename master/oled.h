@@ -11,8 +11,7 @@ unsigned long oled_last_access = 0;
 
 U8GLIB_SSD1306_128X64 display(U8G_I2C_OPT_NONE|U8G_I2C_OPT_DEV_0);  // I2C / TWI
 
-
-typedef void (*oled_draw_func_p)(const U8GLIB&);
+typedef void (*oled_draw_func_p)(U8GLIB&);
 oled_draw_func_p oled_draw_func = 0;
 
 
@@ -72,30 +71,6 @@ void oled_loop()
       display.drawStr(0, 22, "???");
     }
   } while( display.nextPage() );
-  
-#if 0
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(10,0);
-  display.clearDisplay();
-  display.println(F("Hallo\nMax!"));
-  display.display();
-  delay(1);
- 
-  display.startscrollright(0x00, 0x0F);
-  delay(2000);
-  display.stopscroll();
-  delay(1000);
-  display.startscrollleft(0x00, 0x0F);
-  delay(2000);
-  display.stopscroll();
-  delay(1000);    
-  display.startscrolldiagright(0x00, 0x07);
-  delay(2000);
-  display.startscrolldiagleft(0x00, 0x07);
-  delay(2000);
-  display.stopscroll();
-#endif
 }
 
 
