@@ -85,7 +85,7 @@ void setup()
 
 
 int mode = MODE_LED_ACTION;
-int mode_oled = MODE_STOP;
+int mode_oled = MODE_OLED_ON;
 
 
 #if 0
@@ -190,7 +190,7 @@ void loop()
   //led_loop();
 
   if(mode_oled == MODE_OLED_ON) {
-    //oled_loop();
+    oled_loop();
   }
   
   

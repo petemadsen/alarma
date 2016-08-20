@@ -17,11 +17,16 @@ int i2c_read(int addr);
 void i2c_loop()
 {
   int reply;
+
+  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_VERSION);
+  reply = i2c_read(I2C_NANO_SLAVE);
+  if(reply != SLAVE_GET_VERSION) {
+    return;
+  }
   
   i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_BUTTON);
   reply = i2c_read(I2C_NANO_SLAVE);
-  //Serial.println(reply);
-  if(reply) {
+  if(reply == 1) {
     menu_click();
   }
 
@@ -31,13 +36,13 @@ void i2c_loop()
 
   i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_UP);
   reply = i2c_read(I2C_NANO_SLAVE);
-  if(reply) {
+  if(reply == 1) {
     menu_up();
   }
 
   i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_DOWN);
   reply = i2c_read(I2C_NANO_SLAVE);
-  if(reply) {
+  if(reply == 1) {
     menu_down();
   }
 }

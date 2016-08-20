@@ -2,6 +2,11 @@
 #define SOUND_H
 
 
+
+
+
+
+#ifdef USE_SOUND
 unsigned long snd_last_access = 0;
 
 
@@ -73,12 +78,14 @@ void sound_loop()
   if((unsigned long)(m - snd_last_access) < 5) {
     return;
   }
+  /*
   if((m - snd_last_access) > 15) {
     Serial.print("BAD");
     Serial.println(m - snd_last_access);
   }
+  */
 
-    snd_last_access = m;
+  snd_last_access = m;
 }
 
 
@@ -140,6 +147,14 @@ void sound_alarm()
   tone(tonePin, NOTE_A3);
   delay (500);
 }
+
+
+#else
+void sound_setup() {}
+void sound_loop() {}
+void sound_beep() {}
+bool sound_melody(unsigned char snd) {}
+#endif
 
 
 
