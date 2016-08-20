@@ -1,8 +1,8 @@
 #include <Wire.h>
 
 #define MY_DEVICE_ADDR (0xA0>>1)
+#define I2C_CMD_VERSION '?'
 #define I2C_CMD_GET_BUTTON 'b' // resets press event
-#define I2C_CMD_GET_ROTARY 'r'
 #define I2C_CMD_GET_UP 'u'
 #define I2C_CMD_GET_DOWN 'd'
 #define LED_PIN 13
@@ -14,18 +14,15 @@ bool button_is_down = false;
 
 
 
-const int pin_A = 12;  // pin 12
-const int pin_button = 11;
-const int pin_B = 10;  // pin 11
+const int pin_A = 8;  // pin 12
+const int pin_button = 7;
+const int pin_B = 6;  // pin 11
 
 
 unsigned long currentTime;
 unsigned long loopTime;
 
 
-int brightness = 120;
-int prev_brightness = brightness;
-int fadeAmount = 10;
 unsigned char encoder_A;
 unsigned char encoder_B;
 unsigned char encoder_A_prev = 0;
@@ -87,14 +84,13 @@ void i2c_action(int numBytes)
 void do_command(int cmd, int param)
 {
   //do_blink = true;
+//  Serial.print(F("new-command: "));
+//  Serial.println(cmd);
 
   switch(cmd) {
   case I2C_CMD_GET_BUTTON:
     i2c_reply = button_is_pressed;
     button_is_pressed = false;
-    break;
-  case I2C_CMD_GET_ROTARY:
-    i2c_reply = brightness;
     break;
   case I2C_CMD_GET_UP:
     i2c_reply = button_is_up;
@@ -104,7 +100,11 @@ void do_command(int cmd, int param)
     i2c_reply = button_is_down;
     button_is_down = false;
     break;
+  case I2C_CMD_VERSION:
+    i2c_reply = I2C_CMD_VERSION;
+    break;
   default:
+    Serial.println(F("unknown-command"));
     i2c_reply = 0xff;
     break;
   }
@@ -137,27 +137,15 @@ void loop()
       // A has gone from high to low 
       if(encoder_B) {
         // B is high so clockwise
-        // increase the brightness, dont go over 255
-        if(brightness + fadeAmount <= 255) brightness += fadeAmount;               
         button_is_up = true;
       }   
       else {
-        // B is low so counter-clockwise      
-        // decrease the brightness, dont go below 0
-        if(brightness - fadeAmount >= 0) brightness -= fadeAmount;               
+        // B is low so counter-clockwise
         button_is_down = true;
       }   
 
     }   
-    encoder_A_prev = encoder_A;     // Store value of A for next time    
-    
-    // set the brightness of pin 9:
-    //analogWrite(9, brightness);   
-    if(prev_brightness != brightness) {
-      prev_brightness = brightness;
-      Serial.print("brightness: ");
-      Serial.println(brightness);
-    }
+    encoder_A_prev = encoder_A;     // Store value of A for next time
 
     // check if button pressed
     unsigned char isup = digitalRead(pin_button);
