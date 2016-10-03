@@ -60,6 +60,7 @@ void menu_click()
   
   if(menu_item ==MENU_NR_ITEMS) {
     menu_item = 0;
+    oled_set_draw_function(menu_draw);
   } else {
     switch(menu_item) {
       case 0:

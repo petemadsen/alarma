@@ -9,7 +9,7 @@
 unsigned long oled_last_access = 0;
 
 
-U8GLIB_SSD1306_128X64 display(U8G_I2C_OPT_NONE|U8G_I2C_OPT_DEV_0);  // I2C / TWI
+U8GLIB_SSD1306_128X64 display(U8G_I2C_OPT_NO_ACK|U8G_I2C_OPT_DEV_0);  // I2C / TWI
 
 typedef void (*oled_draw_func_p)(U8GLIB&);
 oled_draw_func_p oled_draw_func = 0;
@@ -53,10 +53,11 @@ void oled_setup()
   }
 }
 
+
 void oled_loop()
 {
   unsigned long m = millis();
-    if((unsigned long)(m - oled_last_access) < 1000) {
+    if((unsigned long)(m - oled_last_access) < 100) {
     return;
   }
   oled_last_access = m;
@@ -68,7 +69,7 @@ void oled_loop()
       oled_draw_func(display);
     } else {
       display.setFont(u8g_font_unifont);
-      display.drawStr(0, 22, "???");
+      display.drawStr(0, 20, "Druecken bitte!");
     }
   } while( display.nextPage() );
 }

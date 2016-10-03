@@ -154,6 +154,7 @@ void sound_setup() {}
 void sound_loop() {}
 void sound_beep() {}
 bool sound_melody(unsigned char snd) {}
+void sound_alarm() {}
 #endif
 
 

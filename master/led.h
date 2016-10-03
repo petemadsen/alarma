@@ -79,8 +79,8 @@ void led_loop()
 
 void led_set_mode(uint8_t mode)
 {
-  Serial.print(F("[led] set-mode "));
-  Serial.println(mode);
+  //Serial.print(F("[led] set-mode "));
+  //Serial.println(mode);
   
   led_mode = mode;
   switch(led_mode) {
@@ -261,13 +261,27 @@ void led_sonic_init()
 {
   led_access_delay = LED_SONIC_DELAY;
 }
-void led_sonic_draw(U8GLIB& d)
+void led_sonic_draw(U8GLIB& display)
 {
+  long d = sonic_get_last_distance();
   char buf[12];
-  sprintf(buf, "> %d cm", sonic_get_last_distance());
+
+  long a = sonic_get_alarm_distance();
+  
+  sprintf(buf, "> %d cm", d);
   //d.drawStr(0, d.getFontAscent(), buf);
   //Serial.println(buf);
-  d.drawStr(0, 33, buf);
+  display.drawStr(0, 20, buf);
+
+  sprintf(buf, "@ %d cm", a);
+  display.drawStr(0, 60, buf);
+
+  if(a != -1 and d < a)
+  {
+    led_set_mode(LED_MODE_FLASH);
+    sound_alarm();
+    display.drawStr(80, 20, "ALARM");
+  }
 }
 void led_sonic_step()
 {

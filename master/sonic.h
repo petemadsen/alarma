@@ -21,6 +21,12 @@ long sonic_get_last_distance()
 }
 
 
+long sonic_get_alarm_distance()
+{
+  return alarm_distance;
+}
+
+
 long sonic_measure_distance()
 {
   /* The following trigPin/echoPin cycle is used to determine the
@@ -81,6 +87,9 @@ void sonic_calibrate()
   }
 
   alarm_distance -= 10;
+
+  if(alarm_distance > 300)
+    alarm_distance = -1;
 
   Serial.print(F("calibrated at "));
   Serial.println(alarm_distance);

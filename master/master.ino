@@ -80,7 +80,6 @@ void setup()
 
   menu_init();
 
-
   Serial.println(F("[OK] INIT"));
 }
 
