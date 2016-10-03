@@ -7,12 +7,15 @@
 #include "led.h"
 #include "oled.h"
 #include "mode.h"
+#include "settings.h"
 
 
 void setup()
 {
   Serial.begin (9600);
   Serial.println(F("Init.."));
+
+  settings_setup();
 
   Wire.begin();
 #ifdef USE_SLOW_I2C
@@ -44,7 +47,7 @@ void setup()
   //mp3_setup();
   //Serial.println(F("[ok] mp3"));
 
-  sound_setup();
+  sound_setup(settings_has_sound());
 
   bt_setup();
 

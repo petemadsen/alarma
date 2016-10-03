@@ -4,10 +4,14 @@ void menu_down();
 void menu_click();
 void menu_open();
 void mode_sonic_draw(U8GLIB& display);
+void mode_sound_draw(U8GLIB& display);
+bool sound_is_enabled();
+void settings_set_sound(bool);
 
 
-#define MODE_NONE 0
-#define MODE_SONIC 1
+#define MODE_NONE   0
+#define MODE_SONIC  1
+#define MODE_SOUND  2
 unsigned char mode = MODE_NONE;
 
 
@@ -45,6 +49,10 @@ void mode_rotary_click()
   case MODE_SONIC:
     mode_set(MODE_NONE);
     break;
+  case MODE_SOUND:
+    settings_set_sound(sound_is_enabled());
+    mode_set(MODE_NONE);
+    break;
   default:
     menu_click();
     break;
@@ -57,6 +65,11 @@ void mode_rotary_up()
   switch(mode) {
   case MODE_SONIC:
     sonic_alarm_add(-10);
+    break;
+  case MODE_SOUND:
+    sound_enable(!sound_is_enabled());
+    if(sound_is_enabled())
+      sound_beep();
     break;
   default:
     menu_up();
@@ -71,6 +84,11 @@ void mode_rotary_down()
   switch(mode) {
   case MODE_SONIC:
     sonic_alarm_add(+10);
+    break;
+  case MODE_SOUND:
+    sound_enable(!sound_is_enabled());
+    if(sound_is_enabled())
+      sound_beep();
     break;
   default:
     menu_down();
@@ -87,6 +105,9 @@ void mode_set(unsigned char m)
   case MODE_SONIC:
     mode_access_delay = 100;
     oled_set_draw_function(mode_sonic_draw);
+    break;
+  case MODE_SOUND:
+    oled_set_draw_function(mode_sound_draw);
     break;
   default:
     menu_open();
@@ -120,7 +141,15 @@ void mode_sonic_draw(U8GLIB& display)
     sound_off();
   }
 }
-void led_sonic_step()
+
+
+
+void mode_sound_draw(U8GLIB& display)
 {
+  display.drawStr(0, 20, "Sound");
+  if(sound_is_enabled())
+    display.drawStr(0, 40, "Yes");
+  else
+    display.drawStr(0, 40, "No");
 }
 

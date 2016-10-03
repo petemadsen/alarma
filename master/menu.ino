@@ -2,8 +2,8 @@
 #define MY_MENU_H
 
 
-#define MENU_NR_ITEMS 7
-#define MENU_DISPLAY_ITEMS 3
+#define MENU_NR_ITEMS 8
+#define MENU_DISPLAY_ITEMS 5
 
 
 unsigned char menu_item = MENU_NR_ITEMS; // current menu item, MENU_NR_ITEMS=off
@@ -11,6 +11,7 @@ unsigned char menu_display_top = 0;
 
 
 #define MENU_SONIC 2
+#define MENU_SOUND 7
 const char* const menu0 PROGMEM = "Disco";
 const char* const menu1 PROGMEM = "Flash";
 const char* const menu2 PROGMEM = "Sonic";
@@ -18,8 +19,9 @@ const char* const menu3 PROGMEM = "Melody0";
 const char* const menu4 PROGMEM = "Melody1";
 const char* const menu5 PROGMEM = "Melody2";
 const char* const menu6 PROGMEM = "Melody Alarm";
+const char* const menu7 PROGMEM = "Sound";
 
-const char* const menu_items[] = {menu0, menu1, menu2, menu3, menu4, menu5, menu6};
+const char* const menu_items[] = {menu0, menu1, menu2, menu3, menu4, menu5, menu6, menu7};
 
 
 void menu_init()
@@ -85,7 +87,6 @@ void menu_click()
       oled_set_draw_function(menu_draw);
       break;
     case MENU_SONIC:
-      Serial.println("do-sonic");
       mode_set(MODE_SONIC);
       break;
     case 3:
@@ -93,6 +94,9 @@ void menu_click()
     case 5:
     case 6:
       sound_melody(menu_item - 3);
+      break;
+    case MENU_SOUND:
+      mode_set(MODE_SOUND);
       break;
     break;
   }

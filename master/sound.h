@@ -62,8 +62,10 @@ int thisNote = 0;
 
 
 
-void sound_setup()
+void sound_setup(bool enabled)
 {
+  snd_enabled = enabled;
+  
   pinMode(tonePin, OUTPUT);
   Serial.println(F("[ok] sound"));
 }
@@ -181,15 +183,22 @@ void sound_enable(bool b)
 }
 
 
+bool sound_is_enabled()
+{
+  return snd_enabled;
+}
+
+
 #else
 #define MELODY_ALARM 3
 
-void sound_setup() {}
+void sound_setup(bool /*enabled*/) {}
 void sound_loop() {}
 void sound_beep() {}
 bool sound_melody(unsigned char /*snd*/) { return true; }
 void sound_off() {}
 void sound_enable(bool) {}
+void sound_is_enabled() { return false; }
 #endif
 
 
