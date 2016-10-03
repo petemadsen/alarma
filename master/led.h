@@ -67,6 +67,8 @@ void led_loop()
 
 void led_set_mode(uint8_t mode)
 {
+  if(mode == led_mode)
+    return;
   //Serial.print(F("[led] set-mode "));
   //Serial.println(mode);
   

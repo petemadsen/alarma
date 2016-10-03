@@ -7,6 +7,7 @@ bool sound_play_next_note();
 
 #ifdef USE_SOUND
 unsigned long snd_last_access = 0;
+bool snd_enabled = false;
 
 
 // notes in the melody, // note durations: 4 = quarter note, 8 = eighth note, etc.
@@ -73,6 +74,9 @@ void play_melody();
 
 void sound_beep()
 {
+  if(!snd_enabled)
+    return;
+    
   melody = 0;
   thisNote = 0;
   Serial.println(F("[snd] beep"));
@@ -85,6 +89,9 @@ void sound_beep()
 
 void sound_loop()
 {
+  if(!snd_enabled)
+    return;
+    
   unsigned long m = millis();
   if((unsigned long)(m - snd_last_access) < 5) {
     return;
@@ -113,7 +120,11 @@ void sound_loop()
 bool sound_melody(unsigned char snd)
 {
   if(snd < NR_MELODIES) {
-    melody = melodies[snd];
+    int* next = melodies[snd];
+    if(next == melody)
+      return true;
+   
+    melody = next;
     thisNote = 0;
 
     Serial.print(F("[snd] playing "));
@@ -162,6 +173,14 @@ void sound_off()
 }
 
 
+void sound_enable(bool b)
+{
+  snd_enabled = b;
+  if(!snd_enabled)
+    sound_off();
+}
+
+
 #else
 #define MELODY_ALARM 3
 
@@ -170,6 +189,7 @@ void sound_loop() {}
 void sound_beep() {}
 bool sound_melody(unsigned char /*snd*/) { return true; }
 void sound_off() {}
+void sound_enable(bool) {}
 #endif
 
 
