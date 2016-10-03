@@ -4,7 +4,7 @@
 #include "sound.h"
 
 
-unsigned long maxRange = 1000; // Maximum range needed
+#define ALARM_MAX 1000 // Maximum range needed
 
 int distance = 0; // last distance measured
 int alarm_distance = -1;
@@ -22,6 +22,16 @@ int sonic_get_alarm_distance()
 }
 
 
+void sonic_alarm_add(int add)
+{
+  alarm_distance += add;
+  if(alarm_distance < 0)
+    alarm_distance = -1;
+  else if(alarm_distance > ALARM_MAX)
+    alarm_distance = ALARM_MAX;
+}
+
+
 int sonic_measure_distance()
 {
   /* The following trigPin/echoPin cycle is used to determine the
@@ -35,7 +45,7 @@ int sonic_measure_distance()
   digitalWrite(trigPin, LOW);
   unsigned long duration = pulseIn(echoPin, HIGH);
   if(duration == 0) {
-    return maxRange;
+    return ALARM_MAX;
   }
 
   // Calculate the distance (in cm) based on the speed of sound.
@@ -43,8 +53,8 @@ int sonic_measure_distance()
 
   //Serial.println(distance);
 
-  if(distance > maxRange) {
-    return maxRange;
+  if(distance > ALARM_MAX) {
+    return ALARM_MAX;
   }
   return distance;
 }

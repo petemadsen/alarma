@@ -10,6 +10,7 @@ unsigned char menu_item = MENU_NR_ITEMS; // current menu item, MENU_NR_ITEMS=off
 unsigned char menu_display_top = 0;
 
 
+#define MENU_DISCO 2
 const char* const menu0 PROGMEM = "Disco";
 const char* const menu1 PROGMEM = "Flash";
 const char* const menu2 PROGMEM = "Sonic";
@@ -30,6 +31,12 @@ void menu_up()
 {
   if(menu_item == MENU_NR_ITEMS)
     return;
+
+  if(menu_item == MENU_DISCO)
+  {
+    sonic_alarm_add(-10);
+    return;
+  }
     
   if(menu_item != 0) {
     --menu_item;
@@ -44,6 +51,12 @@ void menu_down()
 {
   if(menu_item == MENU_NR_ITEMS)
     return;
+
+  if(menu_item == MENU_DISCO)
+  {
+    sonic_alarm_add(+10);
+    return;
+  }
     
   if((menu_item+1) < MENU_NR_ITEMS) {
     ++menu_item;
@@ -71,7 +84,7 @@ void menu_click()
         led_set_mode(LED_MODE_FLASH);
         oled_set_draw_function(menu_draw);
         break;
-      case 2:
+      case MENU_DISCO:
         if(led_get_mode() == LED_MODE_SONIC) {
           led_set_mode(LED_MODE_NONE);
           oled_set_draw_function(menu_draw);
