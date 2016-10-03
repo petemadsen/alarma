@@ -1,5 +1,6 @@
 #include <Wire.h>
 
+
 #define MY_DEVICE_ADDR (0xA0>>1)
 #define I2C_CMD_VERSION '?'
 #define I2C_CMD_GET_BUTTON 'b' // resets press event
@@ -57,6 +58,8 @@ void setup()
 
   currentTime = millis();
   loopTime = currentTime;
+
+  Serial.print("Done");
 }
 
 
@@ -122,20 +125,24 @@ void blink()
 
 void loop()
 {
-  if(do_blink) {
-    blink();
+  if(do_blink)
+  {
+    //blink();
     do_blink = false;
   }
 
   // get the current elapsed time
   currentTime = millis();
-  if(currentTime >= (loopTime + 2*5)){
+  if(currentTime >= (loopTime + 2*5))
+  {
     // 5ms since last check of encoder = 200Hz  
     encoder_A = digitalRead(pin_A);    // Read encoder pins
-    encoder_B = digitalRead(pin_B);   
-    if((!encoder_A) && (encoder_A_prev)){
+    encoder_B = digitalRead(pin_B);
+    
+    if(encoder_A != encoder_A_prev)
+    {
       // A has gone from high to low 
-      if(encoder_B) {
+      if(encoder_B == encoder_A) {
         // B is high so clockwise
         button_is_up = true;
       }   
@@ -143,7 +150,6 @@ void loop()
         // B is low so counter-clockwise
         button_is_down = true;
       }   
-
     }   
     encoder_A_prev = encoder_A;     // Store value of A for next time
 
