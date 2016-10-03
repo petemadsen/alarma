@@ -10,7 +10,7 @@ unsigned char menu_item = MENU_NR_ITEMS; // current menu item, MENU_NR_ITEMS=off
 unsigned char menu_display_top = 0;
 
 
-#define MENU_DISCO 2
+#define MENU_SONIC 2
 const char* const menu0 PROGMEM = "Disco";
 const char* const menu1 PROGMEM = "Flash";
 const char* const menu2 PROGMEM = "Sonic";
@@ -33,12 +33,6 @@ void menu_up()
   if(menu_item == MENU_NR_ITEMS)
     return;
 
-  if(led_get_mode() == LED_MODE_SONIC)
-  {
-    sonic_alarm_add(-10);
-    return;
-  }
-    
   if(menu_item != 0) {
     --menu_item;
     if(menu_item < menu_display_top)
@@ -52,19 +46,22 @@ void menu_down()
 {
   if(menu_item == MENU_NR_ITEMS)
     return;
-
-  if(led_get_mode() == LED_MODE_SONIC)
-  {
-    sonic_alarm_add(+10);
-    return;
-  }
-    
+ 
   if((menu_item+1) < MENU_NR_ITEMS) {
     ++menu_item;
     if(menu_item >= (menu_display_top+MENU_DISPLAY_ITEMS))
         ++menu_display_top;
     oled_set_draw_function(menu_draw);
   }
+}
+
+
+void menu_open()
+{
+  if(menu_item ==MENU_NR_ITEMS) {
+    menu_item = 0;
+  }
+  oled_set_draw_function(menu_draw);
 }
 
 
@@ -75,31 +72,29 @@ void menu_click()
   if(menu_item ==MENU_NR_ITEMS) {
     menu_item = 0;
     oled_set_draw_function(menu_draw);
-  } else {
-    switch(menu_item) {
-      case 0:
-        led_set_mode(LED_MODE_DISCO);
-        oled_set_draw_function(menu_draw);
-        break;
-      case 1:
-        led_set_mode(LED_MODE_FLASH);
-        oled_set_draw_function(menu_draw);
-        break;
-      case MENU_DISCO:
-        if(led_get_mode() == LED_MODE_SONIC) {
-          led_set_mode(LED_MODE_NONE);
-          oled_set_draw_function(menu_draw);
-        } else {
-          led_set_mode(LED_MODE_SONIC);
-          led_all_off();
-        }
-      case 3:
-      case 4:
-      case 5:
-        sound_melody(menu_item - 3);
-        break;
+    return;
+  }
+  
+  switch(menu_item) {
+    case 0:
+      led_set_mode(LED_MODE_DISCO);
+      oled_set_draw_function(menu_draw);
       break;
-    }
+    case 1:
+      led_set_mode(LED_MODE_FLASH);
+      oled_set_draw_function(menu_draw);
+      break;
+    case MENU_SONIC:
+      Serial.println("do-sonic");
+      mode_set(MODE_SONIC);
+      break;
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      sound_melody(menu_item - 3);
+      break;
+    break;
   }
 }
 

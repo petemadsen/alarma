@@ -2,9 +2,9 @@
 #define I2C_H
 
 
-void menu_up();
-void menu_down();
-void menu_click();
+void mode_rotary_up();
+void mode_rotary_down();
+void mode_rotary_click();
 
 
 void i2c_send_cmd(int addr, int cmd);
@@ -27,7 +27,7 @@ void i2c_loop()
   i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_BUTTON);
   reply = i2c_read(I2C_NANO_SLAVE);
   if(reply == 1) {
-    menu_click();
+    mode_rotary_click();
   }
 
 //  i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_ROTARY);
@@ -37,13 +37,13 @@ void i2c_loop()
   i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_UP);
   reply = i2c_read(I2C_NANO_SLAVE);
   if(reply == 1) {
-    menu_up();
+    mode_rotary_up();
   }
 
   i2c_send_cmd(I2C_NANO_SLAVE, SLAVE_GET_DOWN);
   reply = i2c_read(I2C_NANO_SLAVE);
   if(reply == 1) {
-    menu_down();
+    mode_rotary_down();
   }
 }
 

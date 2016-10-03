@@ -6,6 +6,7 @@
 #include "button.h"
 #include "led.h"
 #include "oled.h"
+#include "mode.h"
 
 
 void setup()
@@ -48,19 +49,17 @@ void setup()
   bt_setup();
 
   //play_melody();
-  sonic_calibrate();
-  sound_beep();
+  sonic_setup();
 
   //led_disco();
   led_all_off();
 
-  //pinMode(ledPin, OUTPUT);
-  //
-  //pinMode(modePin, INPUT);
+  mode_setup();
 
   menu_init();
 
   Serial.println(F("[OK] INIT"));  
+  sound_beep();
 }
 
 
@@ -83,6 +82,8 @@ void loop()
   sound_loop();
   
   oled_loop();
+
+  mode_loop();
 }
 
 

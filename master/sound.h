@@ -39,26 +39,42 @@ const int melody_alarm[] PROGMEM = {
 };
 
 #define NR_MELODIES 5
-#define MELODY_ALARM 4
-unsigned char sound_next_melody = NR_MELODIES;  // which sound to play
+#define MELODY_ALARM 3
 
 const int* melodies[] = {
   melody_enter,
   melody_brother_jakob,
   melody_happy_birthday,
-  melody_beep,
-  melody_alarm
+  melody_alarm,
+  melody_beep
 };
 
+
+
+//int sound_play_this_melody = 0;
+int* melody = 0;
+int thisNote = 0;
 
 
 #include "common.h"
 #include "pitches.h"
 
+
+
+void sound_setup()
+{
+  pinMode(tonePin, OUTPUT);
+  Serial.println(F("[ok] sound"));
+}
+
+
+
 void play_melody();
 
 void sound_beep()
 {
+  melody = 0;
+  thisNote = 0;
   Serial.println(F("[snd] beep"));
   tone(tonePin, NOTE_A1);
   delay(250);
@@ -67,19 +83,6 @@ void sound_beep()
 
 
 
-
-void sound_setup()
-{
-  pinMode(tonePin, OUTPUT);
-  sound_beep();
-  
-  Serial.println(F("[ok] sound"));
-}
-
-
-//int sound_play_this_melody = 0;
-int* melody = melodies[0];
-int thisNote = 0;
 void sound_loop()
 {
   unsigned long m = millis();
@@ -160,11 +163,13 @@ void sound_off()
 
 
 #else
+#define MELODY_ALARM 3
+
 void sound_setup() {}
 void sound_loop() {}
 void sound_beep() {}
 bool sound_melody(unsigned char /*snd*/) { return true; }
-void sound_alarm() {}
+void sound_off() {}
 #endif
 
 

@@ -60,13 +60,17 @@ int sonic_measure_distance()
 }
 
 
-void sonic_calibrate()
+void sonic_setup()
 {
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   
-  alarm_distance = 0;
+  alarm_distance = -1;
+}
 
+
+void sonic_calibrate_old()
+{
   Serial.println(F("Calibrating..."));
   
   for(int i=0; i<10; ++i)

@@ -6,23 +6,16 @@
 #include "oled.h"
 
 
-
-void led_sonic_draw(U8GLIB& d);
-
 void led_disco_init();
 void led_disco_step();
 
 void led_flash_init();
 void led_flash_step();
 
-void led_sonic_init();
-void led_sonic_step();
-
 
 #define LED_MODE_NONE 0
 #define LED_MODE_DISCO 1
 #define LED_MODE_FLASH 2
-#define LED_MODE_SONIC 3
 uint8_t led_mode = LED_MODE_NONE;
 unsigned long led_last_access = 0;
 unsigned short led_access_delay = 0;
@@ -33,8 +26,6 @@ uint8_t led_disco_steps = 0;
 
 uint8_t led_flash_steps = 0;
 #define LED_FLASH_DELAY 200
-
-#define LED_SONIC_DELAY 100
 
 
 uint8_t led_state[3] = { 0xff, 0xff, 0xff };
@@ -70,9 +61,6 @@ void led_loop()
     case LED_MODE_FLASH:
       led_flash_step();
       break;
-    case LED_MODE_SONIC:
-      led_sonic_step();
-      break;
   }
 }
 
@@ -89,10 +77,6 @@ void led_set_mode(uint8_t mode)
       break;
     case LED_MODE_FLASH:
       led_flash_init();
-      break;
-    case LED_MODE_SONIC:
-      led_sonic_init();
-      oled_set_draw_function(led_sonic_draw);
       break;
     default:
       break;
@@ -251,41 +235,6 @@ void led_flash_step()
   if(--led_flash_steps == 0) {
     led_set_mode(LED_MODE_NONE);
   }
-}
-
-
-void led_sonic_init()
-{
-  led_access_delay = LED_SONIC_DELAY;
-}
-void led_sonic_draw(U8GLIB& display)
-{
-  int d = sonic_get_last_distance();
-  char buf[12];
-
-  int a = sonic_get_alarm_distance();
-  
-  sprintf(buf, "> %d cm", d);
-  //d.drawStr(0, d.getFontAscent(), buf);
-  //Serial.println(buf);
-  display.drawStr(0, 20, buf);
-
-  sprintf(buf, "@ %d cm", a);
-  display.drawStr(0, 60, buf);
-
-  if(a != -1 and d < a)
-  {
-    led_set_mode(LED_MODE_FLASH);
-    sound_melody(MELODY_ALARM);
-    display.drawStr(80, 20, "ALARM");
-  }
-  else
-  {
-    sound_off();
-  }
-}
-void led_sonic_step()
-{
 }
 
 
