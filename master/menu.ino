@@ -2,7 +2,7 @@
 #define MY_MENU_H
 
 
-#define MENU_NR_ITEMS 6
+#define MENU_NR_ITEMS 7
 #define MENU_DISPLAY_ITEMS 3
 
 
@@ -17,8 +17,9 @@ const char* const menu2 PROGMEM = "Sonic";
 const char* const menu3 PROGMEM = "Melody0";
 const char* const menu4 PROGMEM = "Melody1";
 const char* const menu5 PROGMEM = "Melody2";
+const char* const menu6 PROGMEM = "Melody Alarm";
 
-const char* const menu_items[] = {menu0, menu1, menu2, menu3, menu4, menu5};
+const char* const menu_items[] = {menu0, menu1, menu2, menu3, menu4, menu5, menu6};
 
 
 void menu_init()
@@ -32,7 +33,7 @@ void menu_up()
   if(menu_item == MENU_NR_ITEMS)
     return;
 
-  if(menu_item == MENU_DISCO)
+  if(led_get_mode() == LED_MODE_SONIC)
   {
     sonic_alarm_add(-10);
     return;
@@ -52,7 +53,7 @@ void menu_down()
   if(menu_item == MENU_NR_ITEMS)
     return;
 
-  if(menu_item == MENU_DISCO)
+  if(led_get_mode() == LED_MODE_SONIC)
   {
     sonic_alarm_add(+10);
     return;

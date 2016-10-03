@@ -3,8 +3,7 @@
 
 
 
-
-
+bool sound_play_next_note();
 
 #ifdef USE_SOUND
 unsigned long snd_last_access = 0;
@@ -34,15 +33,21 @@ const int melody_beep[] PROGMEM = {
   NOTE_A1, 4,
   -1
 };
+const int melody_alarm[] PROGMEM = {
+  NOTE_A2, 1, NOTE_A3, 1,
+  -1
+};
 
-#define NR_MELODIES 4
+#define NR_MELODIES 5
+#define MELODY_ALARM 4
 unsigned char sound_next_melody = NR_MELODIES;  // which sound to play
 
 const int* melodies[] = {
   melody_enter,
   melody_brother_jakob,
   melody_happy_birthday,
-  melody_beep
+  melody_beep,
+  melody_alarm
 };
 
 
@@ -72,12 +77,25 @@ void sound_setup()
 }
 
 
+//int sound_play_this_melody = 0;
+int* melody = melodies[0];
+int thisNote = 0;
 void sound_loop()
 {
   unsigned long m = millis();
   if((unsigned long)(m - snd_last_access) < 5) {
     return;
   }
+  snd_last_access = m;
+
+  if(!melody)
+    return;
+
+  if(!sound_play_next_note()) {
+    // done
+    melody = 0;
+  }
+  
   /*
   if((m - snd_last_access) > 15) {
     Serial.print("BAD");
@@ -85,67 +103,59 @@ void sound_loop()
   }
   */
 
-  snd_last_access = m;
+  
 }
 
 
 bool sound_melody(unsigned char snd)
 {
-  if(snd >= NR_MELODIES) {
+  if(snd < NR_MELODIES) {
+    melody = melodies[snd];
+    thisNote = 0;
+
+    Serial.print(F("[snd] playing "));
+    Serial.println(snd);
+
+    return true;
+  }
+
+  return false;
+}
+
+
+bool sound_play_next_note()
+{
+  int note = pgm_read_word(melody + thisNote);
+  if(note == -1) {
     return false;
   }
-  
-  int thisNote = 0;
-  const int* melody = melodies[snd];
-
-  Serial.print(F("[snd] playing "));
-  Serial.println(snd);
-
-  // iterate over the notes of the melody:
-  for (;;) {
-    int note = pgm_read_word(melody + thisNote);
-    if(note == -1) {
-      break;
-    }
-    int note_duration = pgm_read_word(melody + thisNote + 1);
+  int note_duration = pgm_read_word(melody + thisNote + 1);
     
-    // to calculate the note duration, take one second 
-    // divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    int noteDuration = 1000/note_duration;
-    tone(tonePin, note, noteDuration);
+  // to calculate the note duration, take one second 
+  // divided by the note type.
+  //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+  int noteDuration = 1000/note_duration;
+  tone(tonePin, note, noteDuration);
 
-    // to distinguish the notes, set a minimum time between them.
-    // the note's duration + 30% seems to work well:
-    int pauseBetweenNotes = noteDuration * 1.30;
-    Serial.println(pauseBetweenNotes);
-    delay(pauseBetweenNotes);
-    // stop the tone playing:
-    noTone(tonePin);
+  // to distinguish the notes, set a minimum time between them.
+  // the note's duration + 30% seems to work well:
+  int pauseBetweenNotes = noteDuration * 1.30;
+  Serial.println(pauseBetweenNotes);
+  delay(pauseBetweenNotes);
+  // stop the tone playing:
+  noTone(tonePin);
 
-    // next note
-    thisNote += 2;
-  }
-  Serial.println(F("[snd] done"));
+  // next note
+  thisNote += 2;
 
   return true;
 }
 
 
-
-
-
-void sound_alarm()
+void sound_off()
 {
-  //digitalWrite(ledPin, HIGH);
-
-  tone(tonePin, NOTE_A2);
-  delay (500);
-  
-  //digitalWrite(ledPin, LOW);
-  
-  tone(tonePin, NOTE_A3);
-  delay (500);
+  melody = 0;
+  noTone(tonePin);
 }
 
 

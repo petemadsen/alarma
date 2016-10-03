@@ -276,8 +276,12 @@ void led_sonic_draw(U8GLIB& display)
   if(a != -1 and d < a)
   {
     led_set_mode(LED_MODE_FLASH);
-    sound_alarm();
+    sound_melody(MELODY_ALARM);
     display.drawStr(80, 20, "ALARM");
+  }
+  else
+  {
+    sound_off();
   }
 }
 void led_sonic_step()
