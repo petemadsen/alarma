@@ -85,11 +85,9 @@ void led_set_mode(uint8_t mode)
   led_mode = mode;
   switch(led_mode) {
     case LED_MODE_DISCO:
-      oled_set_flash_text(F("Disko"));
       led_disco_init();
       break;
     case LED_MODE_FLASH:
-      oled_set_flash_text(F("Flash"));
       led_flash_init();
       break;
     case LED_MODE_SONIC:
@@ -97,7 +95,6 @@ void led_set_mode(uint8_t mode)
       oled_set_draw_function(led_sonic_draw);
       break;
     default:
-      oled_set_flash_text(F("Bitte Taste druecken"));
       break;
   }
 }
@@ -263,10 +260,10 @@ void led_sonic_init()
 }
 void led_sonic_draw(U8GLIB& display)
 {
-  long d = sonic_get_last_distance();
+  int d = sonic_get_last_distance();
   char buf[12];
 
-  long a = sonic_get_alarm_distance();
+  int a = sonic_get_alarm_distance();
   
   sprintf(buf, "> %d cm", d);
   //d.drawStr(0, d.getFontAscent(), buf);

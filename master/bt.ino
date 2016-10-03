@@ -112,7 +112,7 @@ bool bt_parse_command()
       return true;
 
     case BT_CMD_TEXT:
-      oled_set_text((const char*)&bt_rcv_buffer[1]);
+//FIXME      oled_set_text((const char*)&bt_rcv_buffer[1]);
       return true;
       
     case BT_CMD_HELP:

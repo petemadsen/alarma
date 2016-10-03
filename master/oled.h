@@ -81,39 +81,11 @@ void oled_set_draw_function(oled_draw_func_p f)
 }
 
 
-void oled_set_text(const char* text)
-{
-#if 0
-  display.setCursor(0,0);
-  display.clearDisplay();
-  display.println(text);
-  display.display();
-#endif
-}
-
-void oled_set_flash_text(const __FlashStringHelper* text)
-{
-#if 0
-  display.setCursor(0,0);
-  display.clearDisplay();
-  display.println(text);
-  display.display();
-#endif
-}
-
-
-void oled_set_num(long d)
-{
-  //display.drawString(0, 0, d);
-}
-
 
 #else // USE_OLED
 
 void oled_set_menu(const char* const strings[], unsigned char current, unsigned char max_nums, unsigned char num2display) {}
-void oled_set_flash_text(const __FlashStringHelper* text) {}
-void oled_set_text(const char* text) {}
-void oled_set_num(long d) {}
+void oled_set_draw_function(oled_draw_func_p f) {}
 
 #endif // USE_OLED
 

@@ -4,30 +4,25 @@
 #include "sound.h"
 
 
+unsigned long maxRange = 1000; // Maximum range needed
+
+int distance = 0; // last distance measured
+int alarm_distance = -1;
 
 
-long maxRange = 1000; // Maximum range needed
-long minRange = 0; // Minimum range needed
-
-long distance = 0; // last distance measured
-
-
-long alarm_distance = -1;
-
-
-long sonic_get_last_distance()
+int sonic_get_last_distance()
 {
   return distance;
 }
 
 
-long sonic_get_alarm_distance()
+int sonic_get_alarm_distance()
 {
   return alarm_distance;
 }
 
 
-long sonic_measure_distance()
+int sonic_measure_distance()
 {
   /* The following trigPin/echoPin cycle is used to determine the
    distance of the nearest object by bouncing soundwaves off of it. */
@@ -43,14 +38,11 @@ long sonic_measure_distance()
     return maxRange;
   }
 
-  //Calculate the distance (in cm) based on the speed of sound.
-  long distance = duration/58.2;
+  // Calculate the distance (in cm) based on the speed of sound.
+  unsigned long distance = duration/58.2;
 
   //Serial.println(distance);
 
-  if(distance < minRange) {
-    return 0;
-  }
   if(distance > maxRange) {
     return maxRange;
   }
@@ -67,8 +59,9 @@ void sonic_calibrate()
 
   Serial.println(F("Calibrating..."));
   
-  for(int i=0; i<10; ++i) {
-    long d = sonic_measure_distance();
+  for(int i=0; i<10; ++i)
+  {
+    unsigned long d = sonic_measure_distance();
     
     Serial.print(F("step "));
     Serial.print(i);

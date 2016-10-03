@@ -153,7 +153,7 @@ void sound_alarm()
 void sound_setup() {}
 void sound_loop() {}
 void sound_beep() {}
-bool sound_melody(unsigned char snd) {}
+bool sound_melody(unsigned char /*snd*/) { return true; }
 void sound_alarm() {}
 #endif
 
