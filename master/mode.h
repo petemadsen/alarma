@@ -135,10 +135,13 @@ void mode_sonic_draw(U8GLIB& display)
     led_set_mode(LED_MODE_FLASH);
     sound_melody(MELODY_ALARM);
     display.drawStr(80, 20, "ALARM");
+
+    christmas_tree(true);
   }
   else
   {
     sound_off();
+    christmas_tree(false);
   }
 }
 

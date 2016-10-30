@@ -61,8 +61,16 @@ void setup()
 
   menu_init();
 
+  pinMode(CHRISTMAS_TREE, OUTPUT);
+
   Serial.println(F("[OK] INIT"));  
   sound_beep();
+}
+
+
+void christmas_tree(bool b)
+{
+  digitalWrite(CHRISTMAS_TREE, b ? HIGH : LOW);
 }
 
 

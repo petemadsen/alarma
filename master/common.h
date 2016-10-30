@@ -33,6 +33,9 @@
 #define echoPin 10 // Echo Pin
 #define trigPin 9 // Trigger Pin
 
+#define CHRISTMAS_TREE 11
+extern void christmas_tree(bool b);
+
 
 // ------------------------------------------------------------------------------
 // Bluetooth
