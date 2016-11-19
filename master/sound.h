@@ -7,6 +7,7 @@ bool sound_play_next_note();
 
 #ifdef USE_SOUND
 unsigned long snd_last_access = 0;
+unsigned long snd_delay = 100; // this is set according to current note/pause
 bool snd_enabled = false;
 
 
@@ -38,14 +39,20 @@ const int melody_alarm[] PROGMEM = {
   NOTE_A2, 1, NOTE_A3, 1,
   -1
 };
+const int melody_heilige_nacht[] PROGMEM = {
+  NOTE_G4, 1, NOTE_F4, 1, NOTE_G4, 1, NOTE_E4, 1,
+  NOTE_G4, 1, NOTE_F4, 1, NOTE_G4, 1, NOTE_E4, 1,
+  -1
+};
 
-#define NR_MELODIES 5
+#define NR_MELODIES 6
 #define MELODY_ALARM 3
 
 const int* melodies[] = {
   melody_enter,
   melody_brother_jakob,
   melody_happy_birthday,
+  melody_heilige_nacht,
   melody_alarm,
   melody_beep
 };
@@ -95,7 +102,7 @@ void sound_loop()
     return;
     
   unsigned long m = millis();
-  if((unsigned long)(m - snd_last_access) < 5) {
+  if((unsigned long)(m - snd_last_access) < snd_delay) {
     return;
   }
   snd_last_access = m;
@@ -103,9 +110,12 @@ void sound_loop()
   if(!melody)
     return;
 
-  if(!sound_play_next_note()) {
+  if(!sound_play_next_note())
+  {
     // done
     melody = 0;
+    snd_delay = 100;
+    noTone(tonePin);
   }
   
   /*
@@ -114,14 +124,28 @@ void sound_loop()
     Serial.println(m - snd_last_access);
   }
   */
+}
 
-  
+
+bool sound_melody(unsigned char snd);
+void sound_play_debug(unsigned char snd)
+{
+  if(!sound_melody(snd))
+    return;
+  while(sound_play_next_note())
+  {
+  }
+  // done
+  melody = 0;
+  snd_delay = 100;
+  noTone(tonePin);
 }
 
 
 bool sound_melody(unsigned char snd)
 {
-  if(snd < NR_MELODIES) {
+  if(snd < NR_MELODIES)
+  {
     int* next = melodies[snd];
     if(next == melody)
       return true;
@@ -146,6 +170,18 @@ bool sound_play_next_note()
     return false;
   }
   int note_duration = pgm_read_word(melody + thisNote + 1);
+
+  // to calculate the note duration, take one second 
+  // divided by the note type.
+  //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+  int noteDuration = 1000/note_duration;
+  tone(tonePin, note, noteDuration);
+
+  // calculate the start of the next note
+  snd_delay = noteDuration * 1.30;
+
+#if 0
+  int note_duration = pgm_read_word(melody + thisNote + 1);
     
   // to calculate the note duration, take one second 
   // divided by the note type.
@@ -160,6 +196,7 @@ bool sound_play_next_note()
   delay(pauseBetweenNotes);
   // stop the tone playing:
   noTone(tonePin);
+#endif
 
   // next note
   thisNote += 2;

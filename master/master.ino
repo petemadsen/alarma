@@ -99,6 +99,8 @@ void loop()
 
   if(Serial.available())
   {
+    //if(Serial.read() == 'm')
+      //sound_play_debug(2);
     cmd_add_char(Serial);
   }
 }
