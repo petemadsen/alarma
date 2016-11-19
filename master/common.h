@@ -82,4 +82,6 @@ extern void alarm_on();
 
 extern void alarm_off();
 
+extern void cmd_add_char(Stream& io);
+
 #endif

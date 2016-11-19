@@ -8,6 +8,7 @@
 #include "oled.h"
 #include "mode.h"
 #include "settings.h"
+#include "cmd.h"
 
 
 void setup()
@@ -95,6 +96,11 @@ void loop()
   oled_loop();
 
   mode_loop();
+
+  if(Serial.available())
+  {
+    cmd_add_char(Serial);
+  }
 }
 
 
